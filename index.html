@@ -1,194 +1,111 @@
 <!doctype html>
-<html lang="en" data-theme="dark" data-view="form">
+<html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>AVD Venue Database – Prototype UI + Designer</title>
+  <title>AVD DB Layout Designer – Lotus Style</title>
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     :root {
-      --bg-dark: #020617;
-      --bg-dark-elevated: #02091b;
-      --bg-light: #f8fafc;
-      --bg-light-elevated: #ffffff;
+      --bg: #2f3b4f;
+      --canvas-bg: #d6dde7;
+      --canvas-border: #6b7280;
+      --grid-color: rgba(107,114,128,0.35);
+      --group-border: #1f2937;
+      --group-header-bg: #374151;
+      --group-header-text: #e5e7eb;
+      --group-body-bg: #f3f4f6;
+      --text-main: #111827;
+      --palette-bg: #e5e7eb;
+      --palette-border: #9ca3af;
+      --palette-item-bg: #f9fafb;
+      --palette-item-border: #9ca3af;
+      --debug-bg: #111827;
+      --debug-text: #d1d5db;
+      --grid-size: 10px;
+      --group-radius: 4px;
+      --header-height: 22px;
+      --shadow: 0 2px 6px rgba(15,23,42,0.4);
+    }
 
-      --border-subtle-dark: #1f2937;
-      --border-subtle-light: #d1d5db;
-
-      --text-dark: #e5e7eb;
-      --muted-dark: #9ca3af;
-      --text-light: #0f172a;
-      --muted-light: #6b7280;
-
-      --color-venue: #0ea5e9;
-      --color-sales: #22c55e;
-      --color-service: #f97316;
-      --color-flags: #a855f7;
-      --color-contacts: #eab308;
-      --color-misc: #ec4899;
-
-      --field-bg-dark: rgba(15,23,42,0.9);
-      --field-bg-light: rgba(255,255,255,0.98);
-
-      --grid-color-dark: rgba(148,163,184,0.15);
-      --grid-color-light: rgba(148,163,184,0.3);
-
-      --memo-bg-dark: #020617;
-      --memo-bg-light: #f9fafb;
-
-      --toolbar-height: 56px;
-      --grid-size: 12px;
-      --field-radius: 8px;
-      --field-header-height: 26px;
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     html, body {
       margin: 0;
       padding: 0;
       height: 100%;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    }
-
-    body[data-theme="dark"] {
-      background: radial-gradient(circle at top, #020617 0%, #020617 40%, #020617 100%);
-      color: var(--text-dark);
-    }
-
-    body[data-theme="light"] {
-      background: radial-gradient(circle at top, #e5f2ff 0%, #f9fafb 40%, #f9fafb 100%);
-      color: var(--text-light);
-    }
-
-    .app-shell {
-      display: flex;
-      flex-direction: column;
-      height: 100vh;
       overflow: hidden;
     }
 
+    body {
+      background: radial-gradient(circle at top, #1f2933 0%, #111827 55%, #020617 100%);
+      color: var(--text-main);
+    }
+
+    .app {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
     .toolbar {
-      height: var(--toolbar-height);
+      height: 40px;
+      padding: 4px 8px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 12px;
-      box-sizing: border-box;
-      backdrop-filter: blur(12px);
-      position: relative;
-      z-index: 10;
-    }
-
-    body[data-theme="dark"] .toolbar {
-      background: linear-gradient(to right, #020617f0, #020617e6);
-      border-bottom: 1px solid var(--border-subtle-dark);
-    }
-
-    body[data-theme="light"] .toolbar {
-      background: linear-gradient(to right, #ffffffee, #eff6ffdd);
-      border-bottom: 1px solid var(--border-subtle-light);
+      background: linear-gradient(to right, #111827, #1f2937);
+      color: #e5e7eb;
+      border-bottom: 1px solid #000;
     }
 
     .toolbar-left,
-    .toolbar-center,
     .toolbar-right {
       display: flex;
       align-items: center;
       gap: 6px;
     }
 
-    .app-title {
+    .title {
       font-weight: 600;
-      font-size: 14px;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      opacity: 0.9;
-      margin-right: 12px;
+      font-size: 13px;
     }
 
     .btn {
-      border-radius: 999px;
-      border: 1px solid transparent;
-      padding: 5px 10px;
-      font-size: 12px;
-      line-height: 1;
+      border-radius: 4px;
+      border: 1px solid #4b5563;
+      padding: 3px 7px;
+      font-size: 11px;
+      background: #111827;
+      color: #e5e7eb;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      background: transparent;
-      transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
-      white-space: nowrap;
-    }
-
-    body[data-theme="dark"] .btn {
-      color: var(--muted-dark);
-      border-color: rgba(148,163,184,0.3);
-    }
-
-    body[data-theme="light"] .btn {
-      color: var(--muted-light);
-      border-color: rgba(148,163,184,0.5);
     }
 
     .btn:hover {
-      box-shadow: 0 0 0 1px rgba(148,163,184,0.6);
-      background: rgba(148,163,184,0.08);
+      background: #1f2937;
     }
 
-    .btn-primary {
-      font-weight: 500;
-    }
-
-    body[data-theme="dark"] .btn-primary {
-      background: #0ea5e9;
-      border-color: #0ea5e9;
-      color: white;
-    }
-
-    body[data-theme="light"] .btn-primary {
-      background: #2563eb;
-      border-color: #2563eb;
-      color: white;
-    }
-
-    .btn-primary:hover {
-      filter: brightness(1.05);
-    }
-
-    .btn-icon {
-      width: 26px;
-      height: 26px;
-      padding: 0;
-      border-radius: 999px;
-      justify-content: center;
+    .btn-small {
+      font-size: 10px;
+      padding: 2px 5px;
     }
 
     .pill {
-      border-radius: 999px;
-      padding: 5px 10px;
       font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      border: 1px solid transparent;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid #4b5563;
+      background: #020617;
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      cursor: default;
-    }
-
-    .pill-clickable {
-      cursor: pointer;
-    }
-
-    body[data-theme="dark"] .pill {
-      background: rgba(15,23,42,0.7);
-      border-color: rgba(148,163,184,0.4);
-      color: var(--muted-dark);
-    }
-
-    body[data-theme="light"] .pill {
-      background: rgba(255,255,255,0.9);
-      border-color: rgba(148,163,184,0.6);
-      color: var(--muted-light);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
     .pill-dot {
@@ -198,1338 +115,1066 @@
       background: #22c55e;
     }
 
-    .pill-theme-toggle {
-      font-size: 12px;
-      padding-inline: 8px;
-      cursor: pointer;
-    }
-
     .main {
       flex: 1;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    /* View tabs */
-    .view-tabs {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 8px 0 8px;
-      box-sizing: border-box;
-    }
-
-    .view-tab {
-      font-size: 11px;
-      padding: 4px 10px;
-      border-radius: 999px;
-      border: 1px solid transparent;
-      cursor: pointer;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    body[data-theme="dark"] .view-tab {
-      color: var(--muted-dark);
-      border-color: transparent;
-      background: transparent;
-    }
-
-    body[data-theme="light"] .view-tab {
-      color: var(--muted-light);
-      border-color: transparent;
-      background: transparent;
-    }
-
-    .view-tab.active {
-      font-weight: 600;
-    }
-
-    body[data-theme="dark"] .view-tab.active {
-      background: rgba(15,23,42,0.9);
-      border-color: rgba(148,163,184,0.7);
-      color: var(--text-dark);
-    }
-
-    body[data-theme="light"] .view-tab.active {
-      background: #ffffff;
-      border-color: rgba(148,163,184,0.8);
-      color: var(--text-light);
-    }
-
-    .workspace {
-      flex: 1;
       display: grid;
-      grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+      grid-template-columns: minmax(0, 4fr) minmax(220px, 1fr);
       gap: 6px;
       padding: 6px;
-      box-sizing: border-box;
     }
 
-    .canvas-and-designer {
-      position: relative;
-      display: grid;
-      grid-template-columns: minmax(0, 4fr) minmax(0, 1.8fr);
-      gap: 6px;
-      height: 100%;
-    }
-
-    /* For form view, hide designer panel column */
-    body[data-view="form"] .canvas-and-designer {
-      grid-template-columns: minmax(0, 1fr) 0;
-    }
-
-    body[data-view="form"] #designerPanel {
-      display: none;
-    }
-
+    /* Canvas */
     .canvas-wrapper {
       position: relative;
-      border-radius: 10px;
+      background: var(--canvas-bg);
+      border-radius: 6px;
+      border: 1px solid var(--canvas-border);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.3), var(--shadow);
       overflow: hidden;
-    }
-
-    body[data-theme="dark"] .canvas-wrapper {
-      background:
-        linear-gradient(to bottom, rgba(15,23,42,0.9), rgba(15,23,42,0.96)),
-        repeating-linear-gradient(to right,
-          var(--grid-color-dark) 0,
-          var(--grid-color-dark) 1px,
-          transparent 1px,
-          transparent var(--grid-size)
-        ),
-        repeating-linear-gradient(to bottom,
-          var(--grid-color-dark) 0,
-          var(--grid-color-dark) 1px,
-          transparent 1px,
-          transparent var(--grid-size)
-        );
-      border: 1px solid var(--border-subtle-dark);
-    }
-
-    body[data-theme="light"] .canvas-wrapper {
-      background:
-        linear-gradient(to bottom, rgba(255,255,255,0.96), rgba(241,245,249,0.98)),
-        repeating-linear-gradient(to right,
-          var(--grid-color-light) 0,
-          var(--grid-color-light) 1px,
-          transparent 1px,
-          transparent var(--grid-size)
-        ),
-        repeating-linear-gradient(to bottom,
-          var(--grid-color-light) 0,
-          var(--grid-color-light) 1px,
-          transparent 1px,
-          transparent var(--grid-size)
-        );
-      border: 1px solid var(--border-subtle-light);
     }
 
     .canvas-toolbar {
       position: absolute;
-      top: 6px;
-      right: 6px;
+      top: 4px;
+      left: 6px;
       z-index: 5;
       display: flex;
       gap: 4px;
-      align-items: center;
       font-size: 11px;
-      opacity: 0.9;
+      align-items: center;
+    }
+
+    .canvas-toolbar span {
+      font-size: 10px;
+      opacity: 0.8;
     }
 
     .canvas {
       position: absolute;
       inset: 0;
-      padding: 32px 16px 16px 16px;
-      box-sizing: border-box;
+      padding: 26px 6px 6px 6px;
       overflow: auto;
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.7), rgba(214,221,231,0.95)),
+        repeating-linear-gradient(to right, var(--grid-color) 0, var(--grid-color) 1px, transparent 1px, transparent var(--grid-size)),
+        repeating-linear-gradient(to bottom, var(--grid-color) 0, var(--grid-color) 1px, transparent 1px, transparent var(--grid-size));
     }
 
-    .field-box {
+    .group-box {
       position: absolute;
-      border-radius: var(--field-radius);
-      box-sizing: border-box;
-      overflow: hidden;
+      min-width: 160px;
+      min-height: 60px;
+      border-radius: var(--group-radius);
+      border: 1px solid var(--group-border);
+      background: var(--group-body-bg);
+      box-shadow: var(--shadow);
       display: flex;
       flex-direction: column;
-      min-width: 120px;
-      min-height: 48px;
       user-select: none;
-      cursor: default;
-      box-shadow: 0 4px 10px rgba(15,23,42,0.25);
     }
 
-    body[data-theme="light"] .field-box {
-      box-shadow: 0 4px 12px rgba(15,23,42,0.18);
-    }
-
-    .field-header {
-      height: var(--field-header-height);
+    .group-header {
+      height: var(--header-height);
+      background: var(--group-header-bg);
+      color: var(--group-header-text);
+      border-bottom: 1px solid #000;
+      border-top-left-radius: var(--group-radius);
+      border-top-right-radius: var(--group-radius);
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      padding: 0 8px;
-      box-sizing: border-box;
-      font-size: 11px;
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: white;
-      cursor: grab;
-    }
-
-    .field-header span {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .field-header-badge {
-      font-size: 9px;
-      padding: 1px 6px;
-      border-radius: 999px;
-      background: rgba(15,23,42,0.3);
-      border: 1px solid rgba(15,23,42,0.4);
-    }
-
-    .field-body {
-      flex: 1;
-      padding: 6px 8px 8px 8px;
-      box-sizing: border-box;
-      display: flex;
-      flex-direction: column;
+      padding: 0 4px;
       gap: 4px;
-    }
-
-    body[data-theme="dark"] .field-body {
-      background: var(--field-bg-dark);
-      border: 1px solid rgba(15,23,42,0.9);
-    }
-
-    body[data-theme="light"] .field-body {
-      background: var(--field-bg-light);
-      border: 1px solid rgba(148,163,184,0.6);
-    }
-
-    .field-row {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .field-label {
-      font-size: 11px;
-      flex: 0 0 auto;
-      min-width: 80px;
-      color: inherit;
-      opacity: 0.9;
-    }
-
-    .field-input,
-    .field-select {
-      flex: 1;
-      font-size: 11px;
-      padding: 3px 6px;
-      border-radius: 4px;
-      border: 1px solid rgba(148,163,184,0.4);
-      background: rgba(15,23,42,0.8);
-      color: var(--text-dark);
-      box-sizing: border-box;
-    }
-
-    body[data-theme="light"] .field-input,
-    body[data-theme="light"] .field-select {
-      background: #ffffff;
-      color: var(--text-light);
-      border-color: rgba(148,163,184,0.8);
-    }
-
-    .field-input:focus,
-    .field-select:focus {
-      outline: 1px solid #0ea5e9;
-      border-color: #0ea5e9;
-    }
-
-    .field-checkbox {
-      flex: 0 0 auto;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      cursor: move;
       font-size: 11px;
     }
 
-    .field-checkbox input {
-      margin: 0;
-    }
-
-    .field-checkbox label {
+    .collapse-icon {
+      width: 14px;
+      text-align: center;
+      font-size: 11px;
       cursor: pointer;
     }
 
-    .field-box[data-category="venue"] .field-header {
-      background: linear-gradient(to right, #0ea5e9, #38bdf8);
+    .group-title {
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
-    .field-box[data-category="contacts"] .field-header {
-      background: linear-gradient(to right, #eab308, #facc15);
+    .group-title[contenteditable="true"] {
+      outline: 1px dashed #93c5fd;
+      background: rgba(15,23,42,0.6);
     }
 
-    .field-box[data-category="sales"] .field-header {
-      background: linear-gradient(to right, #22c55e, #4ade80);
+    .colour-chip {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      border: 1px solid #000;
+      cursor: pointer;
+      flex-shrink: 0;
     }
 
-    .field-box[data-category="service"] .field-header {
-      background: linear-gradient(to right, #f97316, #fb923c);
+    .group-body {
+      flex: 1;
+      padding: 4px;
+      font-size: 11px;
+      overflow: auto;
+      position: relative;
     }
 
-    .field-box[data-category="flags"] .field-header {
-      background: linear-gradient(to right, #a855f7, #c084fc);
-    }
-
-    .field-box[data-category="misc"] .field-header {
-      background: linear-gradient(to right, #ec4899, #f472b6);
+    .group-body.collapsed {
+      display: none;
     }
 
     .resize-handle {
       position: absolute;
-      right: 2px;
-      bottom: 2px;
-      width: 12px;
-      height: 12px;
-      border-radius: 2px;
+      width: 10px;
+      height: 10px;
+      right: 0;
+      bottom: 0;
       cursor: se-resize;
-      background: rgba(15,23,42,0.4);
-      border: 1px solid rgba(15,23,42,0.7);
+      background: linear-gradient(135deg, #6b7280, #111827);
+      border-top: 1px solid #9ca3af;
+      border-left: 1px solid #9ca3af;
+      border-bottom-right-radius: var(--group-radius);
     }
 
-    body[data-theme="light"] .resize-handle {
-      background: rgba(148,163,184,0.5);
-      border-color: rgba(30,64,175,0.7);
-    }
-
-    .design-mode-indicator {
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 999px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-    }
-
-    body[data-theme="dark"] .design-mode-indicator {
-      background: rgba(248,250,252,0.1);
-      border: 1px solid rgba(148,163,184,0.6);
-      color: var(--muted-dark);
-    }
-
-    body[data-theme="light"] .design-mode-indicator {
-      background: rgba(15,23,42,0.06);
-      border: 1px solid rgba(148,163,184,0.8);
-      color: var(--muted-light);
-    }
-
-    /* Hidden sections styling */
-    .field-box[data-hidden="true"] {
-      /* In designer view we fade it, form view controls display via JS */
-      opacity: 0.25;
-      border-style: dashed;
-    }
-
-    /* Designer side panel */
-    #designerPanel {
-      border-radius: 10px;
-      box-sizing: border-box;
+    /* Fields inside groups */
+    .field-row {
       display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    body[data-theme="dark"] #designerPanel {
-      background: #020617;
-      border: 1px solid var(--border-subtle-dark);
-    }
-
-    body[data-theme="light"] #designerPanel {
-      background: #ffffff;
-      border: 1px solid var(--border-subtle-light);
-    }
-
-    #designerPanelHeader {
-      padding: 6px 8px;
-      font-size: 11px;
-      border-bottom: 1px solid rgba(148,163,184,0.4);
-      display: flex;
-      justify-content: space-between;
       align-items: center;
+      margin-bottom: 2px;
+      gap: 3px;
     }
 
-    #designerPanelList {
-      flex: 1;
-      overflow: auto;
-      padding: 4px 6px 6px 6px;
-      box-sizing: border-box;
-      font-size: 11px;
-    }
-
-    .designer-row {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 4px;
-      padding: 3px 4px;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-
-    body[data-theme="dark"] .designer-row {
-      border: 1px solid transparent;
-    }
-
-    body[data-theme="light"] .designer-row {
-      border: 1px solid transparent;
-    }
-
-    .designer-row:hover {
-      border-color: rgba(148,163,184,0.6);
-      background: rgba(148,163,184,0.12);
-    }
-
-    .designer-row-label {
-      font-weight: 500;
+    .field-label {
+      min-width: 80px;
+      white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
     }
 
-    .designer-row-cat {
-      font-size: 10px;
-      opacity: 0.7;
+    .field-input {
+      flex: 1;
+      font-size: 11px;
+      padding: 2px 3px;
+      border-radius: 2px;
+      border: 1px solid #9ca3af;
+      background: #ffffff;
     }
 
-    .designer-row-toggle {
-      display: inline-flex;
+    /* Floating fields on canvas */
+    .floating-field {
+      position: absolute;
+      display: flex;
       align-items: center;
-      gap: 2px;
-      font-size: 10px;
+      font-size: 11px;
+      padding: 2px 4px;
+      border-radius: 3px;
+      background: #fefce8;
+      border: 1px solid #facc15;
+      box-shadow: 0 1px 3px rgba(15,23,42,0.35);
+      cursor: move;
+      user-select: none;
+      gap: 4px;
     }
 
-    .designer-row-toggle input {
-      margin: 0;
-    }
-
-    /* Memo / bottom panel */
-    .memo-wrapper {
-      border-radius: 10px;
+    .floating-field-label {
+      max-width: 120px;
+      white-space: nowrap;
       overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .floating-field-input {
+      width: 80px;
+      font-size: 11px;
+      padding: 1px 3px;
+      border-radius: 2px;
+      border: 1px solid #9ca3af;
+      background: #ffffff;
+    }
+
+    /* Palette */
+    .palette {
+      background: var(--palette-bg);
+      border-radius: 6px;
+      border: 1px solid var(--palette-border);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.3), var(--shadow);
       display: flex;
       flex-direction: column;
-      box-sizing: border-box;
+      overflow: hidden;
     }
 
-    body[data-theme="dark"] .memo-wrapper {
-      background: #020617;
-      border: 1px solid var(--border-subtle-dark);
-    }
-
-    body[data-theme="light"] .memo-wrapper {
-      background: #ffffff;
-      border: 1px solid var(--border-subtle-light);
-    }
-
-    .memo-toolbar {
+    .palette-header {
+      padding: 5px 6px;
+      font-size: 11px;
+      border-bottom: 1px solid #9ca3af;
+      background: #e5e7eb;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 4px 8px;
-      font-size: 11px;
-      border-bottom: 1px solid rgba(148,163,184,0.4);
+      gap: 4px;
     }
 
-    .memo-controls {
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .memo-select {
-      font-size: 11px;
-      padding: 3px 6px;
-      border-radius: 999px;
-      border: 1px solid rgba(148,163,184,0.6);
-      background: rgba(15,23,42,0.9);
-      color: var(--text-dark);
-    }
-
-    body[data-theme="light"] .memo-select {
-      background: #ffffff;
-      color: var(--text-light);
-    }
-
-    .memo-body {
-      flex: 1;
-      display: grid;
-      grid-template-columns: minmax(0, 2.5fr) minmax(0, 1.5fr);
-      gap: 6px;
-      padding: 6px;
-      box-sizing: border-box;
-    }
-
-    .memo-editor {
+    .palette-search {
       width: 100%;
-      height: 100%;
-      padding: 6px;
-      box-sizing: border-box;
-      resize: none;
-      font-size: 12px;
-      border-radius: 6px;
-      border: 1px solid rgba(148,163,184,0.4);
-    }
-
-    body[data-theme="dark"] .memo-editor {
-      background: var(--memo-bg-dark);
-      color: var(--text-dark);
-    }
-
-    body[data-theme="light"] .memo-editor {
-      background: var(--memo-bg-light);
-      color: var(--text-light);
-    }
-
-    .memo-history {
-      font-size: 11px;
-      border-radius: 6px;
-      border: 1px dashed rgba(148,163,184,0.5);
-      padding: 6px;
-      box-sizing: border-box;
-      overflow: auto;
-    }
-
-    .memo-history-item {
-      margin-bottom: 4px;
-      padding-bottom: 4px;
-      border-bottom: 1px dashed rgba(148,163,184,0.25);
-    }
-
-    .memo-history-item:last-child {
-      border-bottom: none;
-      margin-bottom: 0;
-      padding-bottom: 0;
-    }
-
-    .memo-history-meta {
       font-size: 10px;
-      opacity: 0.7;
+      padding: 2px 4px;
+      border-radius: 3px;
+      border: 1px solid #9ca3af;
+      background: #f9fafb;
     }
 
-    .memo-history-text {
-      margin-top: 2px;
-    }
-
-    .memo-toggle {
+    .palette-body {
+      flex: 1;
+      padding: 4px;
+      overflow: auto;
       font-size: 11px;
-      display: inline-flex;
+    }
+
+    .palette-section-title {
+      font-weight: 600;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin: 4px 0 2px 0;
+      color: #4b5563;
+    }
+
+    .palette-item {
+      padding: 2px 4px;
+      margin-bottom: 2px;
+      border-radius: 3px;
+      border: 1px solid var(--palette-item-border);
+      background: var(--palette-item-bg);
+      cursor: grab;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
       gap: 4px;
-      cursor: pointer;
     }
 
-    .memo-toggle input {
-      margin: 0;
+    .palette-item-code {
+      font-size: 9px;
+      opacity: 0.6;
     }
 
-    /* Debug console */
-    .debug {
-      font-size: 11px;
-      padding: 3px 8px;
-      border-top: 1px solid rgba(148,163,184,0.3);
-      max-height: 80px;
-      overflow: auto;
+    .palette-item:hover {
+      background: #e0f2fe;
+      border-color: #38bdf8;
     }
 
-    body[data-theme="dark"] .debug {
-      background: #020617;
-      color: var(--muted-dark);
-    }
-
-    body[data-theme="light"] .debug {
-      background: #f9fafb;
-      color: var(--muted-light);
-    }
-
-    .debug-entry {
-      white-space: nowrap;
-      text-overflow: ellipsis;
-      overflow: hidden;
-    }
-
-    .nav-arrows {
-      display: inline-flex;
+    .palette-footer {
+      padding: 4px 6px;
+      border-top: 1px solid #9ca3af;
+      font-size: 10px;
+      background: #e5e7eb;
+      display: flex;
       align-items: center;
-      gap: 2px;
-      margin-left: 6px;
-    }
-
-    .nav-arrows .btn {
-      width: 26px;
-      justify-content: center;
-      padding: 4px 0;
-    }
-
-    .divider {
-      width: 1px;
-      height: 22px;
-      background: rgba(148,163,184,0.4);
-      margin: 0 4px;
+      justify-content: space-between;
+      gap: 4px;
     }
 
     input[type="file"] {
       font-size: 10px;
     }
 
-    .hidden {
-      display: none !important;
+    .hidden-input {
+      display: none;
+    }
+
+    /* Debug */
+    .debug {
+      height: 70px;
+      background: var(--debug-bg);
+      color: var(--debug-text);
+      font-size: 11px;
+      padding: 3px 6px;
+      overflow: auto;
+      border-top: 1px solid #000;
+    }
+
+    .debug-line {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    /* Drag hover indication for group bodies */
+    .group-body.drag-over {
+      outline: 2px dashed #2563eb;
+      outline-offset: -2px;
     }
   </style>
 </head>
 <body>
-  <div class="app-shell">
-    <header class="toolbar">
-      <div class="toolbar-left">
-        <div class="app-title">AVD – Venue Database</div>
-        <button class="btn btn-primary" type="button" onclick="logDebug('Browse clicked (stub)')">Browse</button>
-        <button class="btn" type="button" onclick="logDebug('New Record clicked (stub)')">New</button>
-        <button class="btn" type="button" onclick="logDebug('Find clicked (stub)')">Find</button>
-        <button class="btn" type="button" onclick="logDebug('All Records filter clicked (stub)')">
-          All Records ▾
-        </button>
+<div class="app">
+  <div class="toolbar">
+    <div class="toolbar-left">
+      <span class="title">AVD DB Layout Designer</span>
+      <button class="btn btn-small" type="button" onclick="resetLayout()">Reset Layout</button>
+      <button class="btn btn-small" type="button" onclick="downloadLayout()">Save Layout (JSON)</button>
+      <label class="btn btn-small" style="cursor:pointer;">
+        Load Layout
+        <input id="layoutFile" type="file" accept=".json" class="hidden-input" onchange="loadLayoutFromFile(event)" />
+      </label>
+    </div>
+    <div class="toolbar-right">
+      <div class="pill">
+        <span class="pill-dot"></span>
+        <span>Lotus-style Designer v0.1</span>
       </div>
-
-      <div class="toolbar-center">
-        <span style="font-size:11px;opacity:0.8;">Record</span>
-        <div class="nav-arrows">
-          <button class="btn btn-icon" type="button" onclick="logDebug('First record (stub)')">⏮</button>
-          <button class="btn btn-icon" type="button" onclick="logDebug('Previous record (stub)')">◀</button>
-          <button class="btn btn-icon" type="button" onclick="logDebug('Next record (stub)')">▶</button>
-          <button class="btn btn-icon" type="button" onclick="logDebug('Last record (stub)')">⏭</button>
-        </div>
-      </div>
-
-      <div class="toolbar-right">
-        <button class="btn pill-theme-toggle" type="button" onclick="toggleTheme()">
-          <span id="theme-emoji">🌙</span>
-        </button>
-        <div class="pill">
-          <span class="pill-dot"></span>
-          <span>v0.2 – AVD DB</span>
-        </div>
-        <div class="pill pill-clickable" onclick="goToAvdTools()">
-          <span>AVD Tools</span>
-          <span>↗</span>
-        </div>
-      </div>
-    </header>
-
-    <main class="main">
-      <!-- View tabs -->
-      <div class="view-tabs">
-        <button id="tab-form" class="view-tab active" type="button" onclick="switchView('form')">
-          Form View
-        </button>
-        <button id="tab-designer" class="view-tab" type="button" onclick="switchView('designer')">
-          Designer View
-        </button>
-      </div>
-
-      <section class="workspace">
-        <!-- Top: canvas + designer side panel -->
-        <div class="canvas-and-designer">
-          <div class="canvas-wrapper">
-            <div class="canvas-toolbar">
-              <button class="btn btn-icon" type="button" onclick="toggleDesignMode()" title="Toggle design mode">
-                ✏️
-              </button>
-              <span id="design-indicator" class="design-mode-indicator">Design Mode: Off</span>
-              <div class="divider"></div>
-              <button class="btn" type="button" onclick="downloadLayout()">Save Layout</button>
-              <label class="btn" style="cursor:pointer;">
-                Load Layout
-                <input id="layoutFile" type="file" accept=".json" class="hidden" onchange="loadLayoutFromFile(event)" />
-              </label>
-            </div>
-            <div id="canvas" class="canvas"></div>
-          </div>
-
-          <!-- Designer side panel -->
-          <aside id="designerPanel">
-            <div id="designerPanelHeader">
-              <span>Sections / Blocks</span>
-              <span style="font-size:10px;opacity:0.8;">Show / hide + jump</span>
-            </div>
-            <div id="designerPanelList"></div>
-          </aside>
-        </div>
-
-        <!-- Bottom: memo / notes panel -->
-        <div class="memo-wrapper">
-          <div class="memo-toolbar">
-            <div class="memo-controls">
-              <span style="font-weight:600;font-size:11px;">Notes &amp; History</span>
-              <select id="memoFieldSelector" class="memo-select">
-                <option value="notes_main">Notes – General (notes_main)</option>
-                <option value="service_is">Service Notes (service_is)</option>
-                <option value="job_costs">Job Costs (job_costs)</option>
-                <option value="recce_feed">Recce Feedback (recce_feed)</option>
-                <option value="history_log" selected>History Log (history_log)</option>
-              </select>
-            </div>
-            <label class="memo-toggle">
-              <input id="logChangesToggle" type="checkbox" checked />
-              <span>Log field changes into history_log</span>
-            </label>
-          </div>
-          <div class="memo-body">
-            <textarea id="memoEditor" class="memo-editor"
-              placeholder="Type notes for the selected memo field here..."></textarea>
-            <div id="memoHistory" class="memo-history"></div>
-          </div>
-        </div>
-      </section>
-
-      <section id="debug" class="debug"></section>
-    </main>
+    </div>
   </div>
 
-  <script>
-    // ---------- Theme ----------
-    function applyStoredTheme() {
-      const stored = localStorage.getItem('avd-db-theme');
-      if (stored === 'light' || stored === 'dark') {
-        document.body.setAttribute('data-theme', stored);
+  <div class="main">
+    <div class="canvas-wrapper">
+      <div class="canvas-toolbar">
+        <span>Drag group boxes. Drag fields from the right onto a group or canvas. Resize from bottom-right corner.</span>
+      </div>
+      <div id="canvas" class="canvas"></div>
+    </div>
+
+    <aside class="palette">
+      <div class="palette-header">
+        <span>Field Bank</span>
+      </div>
+      <div style="padding: 0 6px 4px 6px;">
+        <input id="paletteSearch" type="text" class="palette-search" placeholder="Filter fields..." oninput="filterPalette()" />
+      </div>
+      <div id="paletteBody" class="palette-body">
+        <!-- Filled by JS -->
+      </div>
+      <div class="palette-footer">
+        <span>Drag to place</span>
+        <div style="display:flex;gap:4px;align-items:center;">
+          <button class="btn btn-small" type="button" onclick="downloadLayout()">Save</button>
+          <label class="btn btn-small" style="cursor:pointer;">
+            Load
+            <input id="layoutFile2" type="file" accept=".json" class="hidden-input" onchange="loadLayoutFromFile(event)" />
+          </label>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div id="debug" class="debug"></div>
+</div>
+
+<script>
+  // ===== CONFIG =====
+  const GRID_SIZE = 10;
+
+  // A sample bank of fields – real DBF fields underneath, nicer labels on top.
+  const FIELD_BANK = [
+    { code: "company", label: "Venue / Company" },
+    { code: "address", label: "Address Line 1" },
+    { code: "address1", label: "Address Line 2" },
+    { code: "address2", label: "Address Line 3" },
+    { code: "area", label: "Area" },
+    { code: "town", label: "Town" },
+    { code: "county", label: "County" },
+    { code: "country", label: "Country" },
+    { code: "postcode", label: "Postcode" },
+    { code: "classifica", label: "Classification" },
+    { code: "identifica", label: "Identification" },
+    { code: "market", label: "Market" },
+    { code: "denominati", label: "Denomination" },
+    { code: "consultant", label: "Consultant" },
+    { code: "lead_from", label: "Lead From" },
+    { code: "status_of_", label: "Status of Job" },
+    { code: "gp__", label: "GP %" },
+    { code: "gp___act", label: "GP £ (Actual)" },
+    { code: "revenue", label: "Revenue £" },
+    { code: "first_name", label: "Contact 1 – First Name" },
+    { code: "last_name", label: "Contact 1 – Last Name" },
+    { code: "job_title", label: "Contact 1 – Job Title" },
+    { code: "mobile_1", label: "Contact 1 – Mobile" },
+    { code: "email", label: "Contact 1 – Email" },
+    { code: "phone_1", label: "Contact 1 – Phone" },
+    { code: "first_nam2", label: "Contact 2 – First Name" },
+    { code: "last_name_", label: "Contact 2 – Last Name" },
+    { code: "other_cont", label: "Contact 2 – Other Contact" },
+    { code: "phone_2", label: "Contact 2 – Phone" },
+    { code: "email_2", label: "Contact 2 – Email" },
+    { code: "contact_3", label: "Contact 3 – Name" },
+    { code: "phone_3", label: "Contact 3 – Phone" },
+    { code: "email_3", label: "Contact 3 – Email" },
+    { code: "contact_4", label: "Contact 4 – Minister / Other" },
+    { code: "phone_4", label: "Contact 4 – Phone" },
+    { code: "email_4", label: "Contact 4 – Email" },
+    { code: "notes_main", label: "Main Notes" },
+    { code: "service_is", label: "Service Issue Notes" },
+    { code: "job_costs", label: "Job Costs Notes" },
+    { code: "recce_feed", label: "Recce Feedback" },
+    { code: "wsm_member", label: "WSM Member (Tick)" },
+    { code: "negotiatin", label: "Negotiable (Tick)" },
+    { code: "avw", label: "AVW (Tick)" }
+  ];
+
+  // 10 group boxes, loosely named; you can rename in the UI
+  const GROUP_DEFAULTS = [
+    "Venue Details",
+    "Primary Contact",
+    "Secondary Contact",
+    "Third Contact",
+    "Fourth / Minister",
+    "Sales & GP",
+    "Service & Dates",
+    "Flags & Territories",
+    "Internal Notes",
+    "Spare Group"
+  ];
+
+  let groups = [];       // {id, title, colour, x,y,w,h, collapsed, fields:[{fieldCode,label}]}
+  let floatingFields = []; // {id, fieldCode,label,x,y}
+
+  let dragState = null;    // group drag
+  let resizeState = null;  // group resize
+  let floatDragState = null; // floating field drag
+
+  // ===== UTIL =====
+  function log(msg) {
+    const dbg = document.getElementById("debug");
+    const line = document.createElement("div");
+    line.className = "debug-line";
+    const ts = new Date().toLocaleTimeString();
+    line.textContent = `[${ts}] ${msg}`;
+    dbg.prepend(line);
+  }
+
+  function snap(v) {
+    return Math.round(v / GRID_SIZE) * GRID_SIZE;
+  }
+
+  function makeId(prefix) {
+    return prefix + "_" + Math.random().toString(36).slice(2, 9);
+  }
+
+  // ===== INIT GROUPS & PALETTE =====
+  function initGroups() {
+    const canvas = document.getElementById("canvas");
+    canvas.innerHTML = "";
+    groups = [];
+
+    const cols = 2;
+    const colWidth = 300;
+    const rowHeight = 140;
+    let idx = 0;
+
+    for (let i = 0; i < 10; i++) {
+      const id = "group" + (i + 1);
+      const title = GROUP_DEFAULTS[i] || ("Group " + (i + 1));
+      const col = i % cols;
+      const row = Math.floor(i / cols);
+      const x = 20 + col * (colWidth + 20);
+      const y = 20 + row * (rowHeight + 10);
+      const w = colWidth;
+      const h = rowHeight;
+
+      const colour = "#4b5563"; // default header tint, will be mapped to background
+
+      const group = { id, title, colour, x, y, w, h, collapsed: false, fields: [] };
+      groups.push(group);
+
+      const el = createGroupElement(group);
+      canvas.appendChild(el);
+    }
+
+    // Layer holder for floating fields
+    const floatLayer = document.createElement("div");
+    floatLayer.id = "floatingLayer";
+    floatLayer.style.position = "absolute";
+    floatLayer.style.inset = "0";
+    floatLayer.style.pointerEvents = "none"; // children will re-enable
+    canvas.appendChild(floatLayer);
+
+    floatingFields = [];
+  }
+
+  function createGroupElement(group) {
+    const el = document.createElement("div");
+    el.className = "group-box";
+    el.dataset.id = group.id;
+    updateGroupPosition(el, group);
+
+    const header = document.createElement("div");
+    header.className = "group-header";
+
+    const collapseIcon = document.createElement("div");
+    collapseIcon.className = "collapse-icon";
+    collapseIcon.textContent = group.collapsed ? "▸" : "▾";
+    collapseIcon.addEventListener("click", function(e) {
+      e.stopPropagation();
+      toggleGroupCollapse(group.id);
+    });
+
+    const titleSpan = document.createElement("div");
+    titleSpan.className = "group-title";
+    titleSpan.textContent = group.title;
+    titleSpan.title = "Double-click to rename";
+    titleSpan.addEventListener("dblclick", function(e) {
+      e.stopPropagation();
+      titleSpan.contentEditable = "true";
+      titleSpan.focus();
+      const range = document.createRange();
+      range.selectNodeContents(titleSpan);
+      const sel = window.getSelection();
+      sel.removeAllRanges();
+      sel.addRange(range);
+    });
+
+    titleSpan.addEventListener("blur", function() {
+      titleSpan.contentEditable = "false";
+      const newTitle = titleSpan.textContent.trim() || group.id;
+      group.title = newTitle;
+      titleSpan.textContent = newTitle;
+      log("Renamed " + group.id + " to '" + newTitle + "'");
+    });
+
+    titleSpan.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        titleSpan.blur();
       }
-      const isDark = document.body.getAttribute('data-theme') === 'dark';
-      document.getElementById('theme-emoji').textContent = isDark ? '🌙' : '☀️';
+    });
+
+    const colourChip = document.createElement("div");
+    colourChip.className = "colour-chip";
+    colourChip.style.background = group.colour;
+    colourChip.title = "Change group header colour";
+
+    const colourInput = document.createElement("input");
+    colourInput.type = "color";
+    colourInput.value = group.colour;
+    colourInput.className = "hidden-input";
+
+    colourChip.addEventListener("click", function(e) {
+      e.stopPropagation();
+      colourInput.click();
+    });
+
+    colourInput.addEventListener("input", function() {
+      group.colour = colourInput.value;
+      colourChip.style.background = group.colour;
+      header.style.background = group.colour;
+      log("Colour changed for " + group.id + " to " + group.colour);
+    });
+
+    header.appendChild(collapseIcon);
+    header.appendChild(titleSpan);
+    header.appendChild(colourChip);
+    header.appendChild(colourInput);
+
+    const body = document.createElement("div");
+    body.className = "group-body";
+    body.dataset.groupId = group.id;
+    if (group.collapsed) {
+      body.classList.add("collapsed");
     }
 
-    function toggleTheme() {
-      const current = document.body.getAttribute('data-theme') || 'dark';
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.body.setAttribute('data-theme', next);
-      localStorage.setItem('avd-db-theme', next);
-      document.getElementById('theme-emoji').textContent = next === 'dark' ? '🌙' : '☀️';
-      logDebug('Theme switched to ' + next);
-    }
-
-    applyStoredTheme();
-
-    function goToAvdTools() {
-      logDebug('AVD Tools pill clicked – set correct URL in goToAvdTools()');
-      // window.location.href = 'https://your-avd-tools-url-here';
-    }
-
-    // ---------- View switching (Form vs Designer) ----------
-    let currentView = document.body.getAttribute('data-view') || 'form';
-
-    function switchView(view) {
-      currentView = view;
-      document.body.setAttribute('data-view', view);
-
-      document.getElementById('tab-form').classList.toggle('active', view === 'form');
-      document.getElementById('tab-designer').classList.toggle('active', view === 'designer');
-
-      updateFieldVisibilityForView();
-      logDebug('Switched to ' + view + ' view');
-    }
-
-    // ---------- Layout / fields ----------
-    const GRID_SIZE = 12;
-    let designMode = false;
-    let currentDrag = null;
-    let currentResize = null;
-
-    const FIELD_DEFS = [
-      {
-        id: 'venueMain',
-        label: 'Venue Details',
-        category: 'venue',
-        default: { left: 16, top: 16, width: 480, height: 120, hidden: false },
-        render: function() {
-          return `
-            <div class="field-row">
-              <div class="field-label">Venue / Company</div>
-              <input class="field-input" data-field="company" placeholder="Company / Venue name" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Address</div>
-              <input class="field-input" data-field="address" placeholder="Address line 1" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Address 2</div>
-              <input class="field-input" data-field="address2" placeholder="Address line 2" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Area / Town</div>
-              <input class="field-input" data-field="area" placeholder="Area" style="max-width: 120px;" />
-              <input class="field-input" data-field="town" placeholder="Town" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">County</div>
-              <input class="field-input" data-field="county" placeholder="County" style="max-width: 160px;" />
-              <div class="field-label">Postcode</div>
-              <input class="field-input" data-field="postcode" placeholder="Postcode" style="max-width: 120px;" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Country</div>
-              <select class="field-select" data-field="country">
-                <option value="">(Select)</option>
-                <option value="England">England</option>
-                <option value="Wales">Wales</option>
-              </select>
-            </div>
-          `;
-        }
-      },
-      {
-        id: 'primaryContact',
-        label: 'Primary Contact',
-        category: 'contacts',
-        default: { left: 520, top: 16, width: 360, height: 120, hidden: false },
-        render: function() {
-          return `
-            <div class="field-row">
-              <div class="field-label">Prefix</div>
-              <select class="field-select" data-field="pre_1">
-                <option value="">(Title)</option>
-                <option>Mr</option>
-                <option>Mrs</option>
-                <option>Miss</option>
-                <option>Ms</option>
-                <option>Rev</option>
-                <option>Canon</option>
-                <option>Dr</option>
-              </select>
-              <div class="field-label">WSM Mem?</div>
-              <span class="field-checkbox">
-                <input id="wsm_member" type="checkbox" data-field="wsm_member" />
-                <label for="wsm_member">Yes</label>
-              </span>
-            </div>
-            <div class="field-row">
-              <div class="field-label">First</div>
-              <input class="field-input" data-field="first_name" placeholder="First name" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Last</div>
-              <input class="field-input" data-field="last_name" placeholder="Last name" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Job Title</div>
-              <input class="field-input" data-field="job_title" placeholder="Job title" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Mobile</div>
-              <input class="field-input" data-field="mobile_1" placeholder="Mobile 1" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Email</div>
-              <input class="field-input" data-field="email" placeholder="Email 1" />
-            </div>
-          `;
-        }
-      },
-      {
-        id: 'classificationSales',
-        label: 'Classification & Sales',
-        category: 'sales',
-        default: { left: 16, top: 152, width: 420, height: 120, hidden: false },
-        render: function() {
-          return `
-            <div class="field-row">
-              <div class="field-label">Classification</div>
-              <select class="field-select" data-field="classifica">
-                <option value="">(Select)</option>
-                <option>Prospect</option>
-                <option>Customer</option>
-                <option>Dormant</option>
-                <option>Lost</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <div class="field-label">Status of Job</div>
-              <select class="field-select" data-field="status_of_">
-                <option value="">(Select)</option>
-                <option>Enquiry</option>
-                <option>Quoted</option>
-                <option>Won</option>
-                <option>Lost</option>
-                <option>On Hold</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <div class="field-label">Market</div>
-              <select class="field-select" data-field="market">
-                <option value="">(Select)</option>
-                <option>Church</option>
-                <option>School</option>
-                <option>Hall</option>
-                <option>Corporate</option>
-                <option>Hospitality</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <div class="field-label">Denomination</div>
-              <select class="field-select" data-field="denominati">
-                <option value="">(Select)</option>
-                <option>Church of England</option>
-                <option>Roman Catholic</option>
-                <option>Baptist</option>
-                <option>Methodist</option>
-                <option>URC</option>
-                <option>Other</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <div class="field-label">GP %</div>
-              <input class="field-input" data-field="gp__" placeholder="e.g. 45" />
-              <div class="field-label">GP £</div>
-              <input class="field-input" data-field="gp___act" placeholder="e.g. 3500" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Revenue £</div>
-              <input class="field-input" data-field="revenue" placeholder="e.g. 7800" />
-            </div>
-          `;
-        }
-      },
-      {
-        id: 'consultantFlags',
-        label: 'Consultant & Flags',
-        category: 'flags',
-        default: { left: 448, top: 152, width: 432, height: 120, hidden: false },
-        render: function() {
-          return `
-            <div class="field-row">
-              <div class="field-label">Consultant</div>
-              <select class="field-select" data-field="consultant">
-                <option value="">(Select)</option>
-                <option>Mark</option>
-                <option>Neil</option>
-                <option>Josh</option>
-                <option>Sharon</option>
-                <option>Frazer</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <div class="field-label">Lead From</div>
-              <select class="field-select" data-field="lead_from">
-                <option value="">(Select)</option>
-                <option>Website</option>
-                <option>Referral</option>
-                <option>WSM Chamber</option>
-                <option>Existing Customer</option>
-                <option>Inbound Call</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <div class="field-label">Flag – David</div>
-              <select class="field-select" data-field="flag">
-                <option value="">(None)</option>
-                <option>Watch</option>
-                <option>Key Account</option>
-                <option>Price Sensitive</option>
-              </select>
-            </div>
-            <div class="field-row">
-              <span class="field-checkbox">
-                <input id="negotiable" type="checkbox" data-field="negotiatin" />
-                <label for="negotiable">Negotiable?</label>
-              </span>
-              <span class="field-checkbox">
-                <input id="bad_email" type="checkbox" data-field="bad_email" />
-                <label for="bad_email">Bad Email?</label>
-              </span>
-              <span class="field-checkbox">
-                <input id="exclude_chase" type="checkbox" data-field="exc_chase" />
-                <label for="exclude_chase">Exclude From Chase</label>
-              </span>
-            </div>
-            <div class="field-row">
-              <span class="field-checkbox">
-                <input id="within10" type="checkbox" data-field="area___10m" />
-                <label for="within10">&lt;=10 miles</label>
-              </span>
-              <span class="field-checkbox">
-                <input id="within25" type="checkbox" data-field="area___25m" />
-                <label for="within25">&lt;=25 miles</label>
-              </span>
-              <span class="field-checkbox">
-                <input id="within50" type="checkbox" data-field="area___50m" />
-                <label for="within50">&lt;=50 miles</label>
-              </span>
-            </div>
-          `;
-        }
-      },
-      {
-        id: 'serviceDates',
-        label: 'Service / Key Dates',
-        category: 'service',
-        default: { left: 16, top: 288, width: 420, height: 120, hidden: false },
-        render: function() {
-          return `
-            <div class="field-row">
-              <div class="field-label">Recce Date</div>
-              <input class="field-input" type="date" data-field="recce_date" />
-              <div class="field-label">Report</div>
-              <input class="field-input" type="date" data-field="report" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Quote Sent</div>
-              <input class="field-input" type="date" data-field="quote_sent" />
-              <div class="field-label">Quote Recvd</div>
-              <input class="field-input" type="date" data-field="quote_rcvd" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Date Sold</div>
-              <input class="field-input" type="date" data-field="date_sold" />
-              <div class="field-label">Job Completed</div>
-              <input class="field-input" type="date" data-field="job_comple" />
-            </div>
-            <div class="field-row">
-              <div class="field-label">Service Open</div>
-              <input class="field-input" type="date" data-field="service_op" />
-              <div class="field-label">Service Close</div>
-              <input class="field-input" type="date" data-field="service_cl" />
-            </div>
-          `;
-        }
-      }
-    ];
-
-    function snap(value) {
-      return Math.round(value / GRID_SIZE) * GRID_SIZE;
-    }
-
-    function initCanvas() {
-      const canvas = document.getElementById('canvas');
-      canvas.innerHTML = '';
-
-      FIELD_DEFS.forEach(def => {
-        const box = document.createElement('div');
-        box.className = 'field-box';
-        box.dataset.id = def.id;
-        box.dataset.category = def.category;
-        box.dataset.hidden = def.default.hidden ? 'true' : 'false';
-
-        const d = def.default;
-        box.style.left = d.left + 'px';
-        box.style.top = d.top + 'px';
-        box.style.width = d.width + 'px';
-        box.style.height = d.height + 'px';
-
-        box.innerHTML = `
-          <div class="field-header">
-            <span>${def.label}</span>
-            <span class="field-header-badge">${def.category}</span>
-          </div>
-          <div class="field-body">
-            ${def.render()}
-          </div>
-          <div class="resize-handle"></div>
-        `;
-
-        const header = box.querySelector('.field-header');
-        const resizeHandle = box.querySelector('.resize-handle');
-
-        header.addEventListener('mousedown', onDragStart);
-        resizeHandle.addEventListener('mousedown', onResizeStart);
-
-        box.querySelectorAll('input, select, textarea').forEach(el => {
-          el.addEventListener('change', onFieldChanged);
-        });
-
-        canvas.appendChild(box);
-      });
-
-      updateFieldVisibilityForView();
-    }
-
-    function onDragStart(e) {
-      if (!designMode) return;
-      const box = e.currentTarget.parentElement;
-      const rect = box.getBoundingClientRect();
-      const canvasRect = document.getElementById('canvas').getBoundingClientRect();
-
-      currentDrag = {
-        id: box.dataset.id,
-        offsetX: e.clientX - rect.left,
-        offsetY: e.clientY - rect.top,
-        canvasLeft: canvasRect.left,
-        canvasTop: canvasRect.top
+    // Drag to move group
+    header.addEventListener("mousedown", function(e) {
+      if (e.target === colourChip || e.target === colourInput || titleSpan.isContentEditable) return;
+      const rect = el.getBoundingClientRect();
+      const canvasRect = document.getElementById("canvas").getBoundingClientRect();
+      dragState = {
+        groupId: group.id,
+        offsetX: e.clientX - rect.left + canvasRect.left,
+        offsetY: e.clientY - rect.top + canvasRect.top
       };
-
-      document.addEventListener('mousemove', onDragging);
-      document.addEventListener('mouseup', onDragEnd);
       e.preventDefault();
-    }
+    });
 
-    function onDragging(e) {
-      if (!currentDrag) return;
-      const box = document.querySelector(`.field-box[data-id="${currentDrag.id}"]`);
-      if (!box) return;
-
-      const rawLeft = e.clientX - currentDrag.canvasLeft - currentDrag.offsetX;
-      const rawTop = e.clientY - currentDrag.canvasTop - currentDrag.offsetY;
-
-      box.style.left = snap(rawLeft) + 'px';
-      box.style.top = snap(rawTop) + 'px';
-    }
-
-    function onDragEnd() {
-      if (currentDrag) {
-        logDebug('Moved ' + currentDrag.id);
+    // Allow drop inside group
+    body.addEventListener("dragover", function(e) {
+      e.preventDefault();
+      body.classList.add("drag-over");
+    });
+    body.addEventListener("dragleave", function() {
+      body.classList.remove("drag-over");
+    });
+    body.addEventListener("drop", function(e) {
+      e.preventDefault();
+      body.classList.remove("drag-over");
+      const data = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");
+      if (!data) return;
+      let field;
+      try {
+        field = JSON.parse(data);
+      } catch {
+        const code = data;
+        field = FIELD_BANK.find(f => f.code === code) || { code, label: code };
       }
-      document.removeEventListener('mousemove', onDragging);
-      document.removeEventListener('mouseup', onDragEnd);
-      currentDrag = null;
-    }
+      addFieldToGroup(group.id, field.code, field.label);
+    });
 
-    function onResizeStart(e) {
-      if (!designMode) return;
-      const box = e.currentTarget.parentElement;
-      const rect = box.getBoundingClientClientRect ? box.getBoundingClientRect() : box.getBoundingClientRect();
-      currentResize = {
-        id: box.dataset.id,
+    // Resize handle
+    const resizeHandle = document.createElement("div");
+    resizeHandle.className = "resize-handle";
+    resizeHandle.addEventListener("mousedown", function(e) {
+      e.stopPropagation();
+      const rect = el.getBoundingClientRect();
+      resizeState = {
+        groupId: group.id,
         startX: e.clientX,
         startY: e.clientY,
-        startWidth: rect.width,
-        startHeight: rect.height
+        startW: rect.width,
+        startH: rect.height
       };
-      document.addEventListener('mousemove', onResizing);
-      document.addEventListener('mouseup', onResizeEnd);
       e.preventDefault();
-      e.stopPropagation();
-    }
+    });
 
-    function onResizing(e) {
-      if (!currentResize) return;
-      const box = document.querySelector(`.field-box[data-id="${currentResize.id}"]`);
-      if (!box) return;
-      const deltaX = e.clientX - currentResize.startX;
-      const deltaY = e.clientY - currentResize.startY;
-      const newW = snap(Math.max(120, currentResize.startWidth + deltaX));
-      const newH = snap(Math.max(48, currentResize.startHeight + deltaY));
-      box.style.width = newW + 'px';
-      box.style.height = newH + 'px';
-    }
+    el.appendChild(header);
+    el.appendChild(body);
+    el.appendChild(resizeHandle);
 
-    function onResizeEnd() {
-      if (currentResize) {
-        logDebug('Resized ' + currentResize.id);
-      }
-      document.removeEventListener('mousemove', onResizing);
-      document.removeEventListener('mouseup', onResizeEnd);
-      currentResize = null;
-    }
+    return el;
+  }
 
-    function toggleDesignMode() {
-      designMode = !designMode;
-      const indicator = document.getElementById('design-indicator');
-      indicator.textContent = 'Design Mode: ' + (designMode ? 'On' : 'Off');
-      indicator.style.opacity = designMode ? '1' : '0.7';
-      logDebug('Design mode ' + (designMode ? 'enabled' : 'disabled'));
-    }
+  function updateGroupPosition(el, group) {
+    el.style.left = snap(group.x) + "px";
+    el.style.top = snap(group.y) + "px";
+    el.style.width = snap(group.w) + "px";
+    el.style.height = snap(group.h) + "px";
+    const header = el.querySelector(".group-header");
+    if (header) header.style.background = group.colour;
+  }
 
-    function collectLayout() {
-      const layout = {};
-      document.querySelectorAll('.field-box').forEach(box => {
-        const id = box.dataset.id;
-        layout[id] = {
-          left: parseInt(box.style.left, 10) || 0,
-          top: parseInt(box.style.top, 10) || 0,
-          width: parseInt(box.style.width, 10) || 200,
-          height: parseInt(box.style.height, 10) || 80,
-          hidden: box.dataset.hidden === 'true'
-        };
+  function toggleGroupCollapse(groupId) {
+    const group = groups.find(g => g.id === groupId);
+    if (!group) return;
+    group.collapsed = !group.collapsed;
+    const el = document.querySelector(`.group-box[data-id="${groupId}"]`);
+    if (!el) return;
+    const body = el.querySelector(".group-body");
+    const icon = el.querySelector(".collapse-icon");
+    if (group.collapsed) {
+      body.classList.add("collapsed");
+      icon.textContent = "▸";
+    } else {
+      body.classList.remove("collapsed");
+      icon.textContent = "▾";
+    }
+    log((group.collapsed ? "Collapsed " : "Expanded ") + groupId);
+  }
+
+  // ===== FIELD BANK / PALETTE =====
+  function initPalette() {
+    const body = document.getElementById("paletteBody");
+    body.innerHTML = "";
+
+    const groups = [
+      { title: "Venue", filter: f => ["company","address","address1","address2","area","town","county","country","postcode"].includes(f.code) },
+      { title: "Classification / Sales", filter: f => ["classifica","identifica","market","denominati","status_of_","gp__","gp___act","revenue"].includes(f.code) },
+      { title: "Contacts", filter: f => f.label.startsWith("Contact") },
+      { title: "Notes / Other", filter: f => !f.label.startsWith("Contact") && !["company","address","address1","address2","area","town","county","country","postcode","classifica","identifica","market","denominati","status_of_","gp__","gp___act","revenue"].includes(f.code) }
+    ];
+
+    groups.forEach(group => {
+      const fields = FIELD_BANK.filter(group.filter);
+      if (!fields.length) return;
+      const titleEl = document.createElement("div");
+      titleEl.className = "palette-section-title";
+      titleEl.textContent = group.title;
+      body.appendChild(titleEl);
+
+      fields.forEach(f => {
+        const item = document.createElement("div");
+        item.className = "palette-item";
+        item.draggable = true;
+        item.dataset.code = f.code;
+        item.dataset.label = f.label;
+
+        const left = document.createElement("span");
+        left.textContent = f.label;
+
+        const right = document.createElement("span");
+        right.className = "palette-item-code";
+        right.textContent = f.code;
+
+        item.appendChild(left);
+        item.appendChild(right);
+
+        item.addEventListener("dragstart", function(e) {
+          const payload = JSON.stringify({ code: f.code, label: f.label });
+          e.dataTransfer.setData("application/json", payload);
+          e.dataTransfer.setData("text/plain", f.code);
+        });
+
+        body.appendChild(item);
       });
-      return layout;
-    }
+    });
+  }
 
-    function applyLayout(layout) {
-      Object.keys(layout).forEach(id => {
-        const box = document.querySelector(`.field-box[data-id="${id}"]`);
-        if (!box) return;
-        const l = layout[id];
-        box.style.left = (l.left || 0) + 'px';
-        box.style.top = (l.top || 0) + 'px';
-        box.style.width = (l.width || 200) + 'px';
-        box.style.height = (l.height || 80) + 'px';
-        box.dataset.hidden = l.hidden ? 'true' : 'false';
-      });
-      updateDesignerPanelCheckboxes();
-      updateFieldVisibilityForView();
-      logDebug('Layout applied from JSON');
-    }
+  function filterPalette() {
+    const query = (document.getElementById("paletteSearch").value || "").toLowerCase();
+    const body = document.getElementById("paletteBody");
+    const items = body.querySelectorAll(".palette-item");
+    const titles = body.querySelectorAll(".palette-section-title");
 
-    function downloadLayout() {
-      const layout = collectLayout();
-      const blob = new Blob([JSON.stringify(layout, null, 2)], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'layout.json';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      logDebug('Layout downloaded as layout.json');
-    }
+    items.forEach(item => {
+      const label = item.firstChild.textContent.toLowerCase();
+      const code = item.dataset.code.toLowerCase();
+      item.style.display = (label.includes(query) || code.includes(query)) ? "" : "none";
+    });
 
-    function loadLayoutFromFile(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        try {
-          const json = JSON.parse(e.target.result);
-          applyLayout(json);
-        } catch (err) {
-          logDebug('Error parsing layout JSON: ' + err.message);
+    titles.forEach(title => {
+      // show title only if any following items visible until next title
+      let next = title.nextElementSibling;
+      let anyVisible = false;
+      while (next && !next.classList.contains("palette-section-title")) {
+        if (next.style.display !== "none") {
+          anyVisible = true;
+          break;
         }
+        next = next.nextElementSibling;
+      }
+      title.style.display = anyVisible ? "" : "none";
+    });
+  }
+
+  // ===== ADD FIELD TO GROUP / CANVAS =====
+  function addFieldToGroup(groupId, fieldCode, label) {
+    const group = groups.find(g => g.id === groupId);
+    if (!group) return;
+
+    if (!label) {
+      const fromBank = FIELD_BANK.find(f => f.code === fieldCode);
+      label = fromBank ? fromBank.label : fieldCode;
+    }
+
+    // Avoid duplicates of same field in same group
+    if (group.fields.some(f => f.fieldCode === fieldCode)) {
+      log(`Field ${fieldCode} already in ${group.title}`);
+      return;
+    }
+
+    group.fields.push({ fieldCode, label });
+
+    const groupEl = document.querySelector(`.group-box[data-id="${groupId}"]`);
+    if (!groupEl) return;
+    const body = groupEl.querySelector(".group-body");
+
+    const row = document.createElement("div");
+    row.className = "field-row";
+    row.dataset.fieldCode = fieldCode;
+
+    const lbl = document.createElement("div");
+    lbl.className = "field-label";
+    lbl.textContent = label;
+
+    const input = document.createElement("input");
+    input.className = "field-input";
+    input.placeholder = label;
+    input.dataset.fieldCode = fieldCode;
+
+    row.appendChild(lbl);
+    row.appendChild(input);
+    body.appendChild(row);
+
+    log(`Added field ${fieldCode} → ${group.title}`);
+  }
+
+  function addFloatingField(fieldCode, label, x, y) {
+    if (!label) {
+      const fromBank = FIELD_BANK.find(f => f.code === fieldCode);
+      label = fromBank ? fromBank.label : fieldCode;
+    }
+    const id = makeId("float");
+    const field = { id, fieldCode, label, x: snap(x), y: snap(y) };
+    floatingFields.push(field);
+
+    const layer = document.getElementById("floatingLayer");
+    const el = document.createElement("div");
+    el.className = "floating-field";
+    el.dataset.id = id;
+    el.style.left = field.x + "px";
+    el.style.top = field.y + "px";
+    el.style.pointerEvents = "auto";
+
+    const lbl = document.createElement("span");
+    lbl.className = "floating-field-label";
+    lbl.textContent = label;
+
+    const input = document.createElement("input");
+    input.className = "floating-field-input";
+    input.placeholder = label;
+    input.dataset.fieldCode = fieldCode;
+
+    el.appendChild(lbl);
+    el.appendChild(input);
+
+    el.addEventListener("mousedown", function(e) {
+      const rect = el.getBoundingClientRect();
+      const canvasRect = document.getElementById("canvas").getBoundingClientRect();
+      floatDragState = {
+        id,
+        offsetX: e.clientX - rect.left + canvasRect.left,
+        offsetY: e.clientY - rect.top + canvasRect.top
       };
-      reader.readAsText(file);
-      event.target.value = '';
-    }
+      e.preventDefault();
+    });
 
-    function setFieldHidden(id, hidden) {
-      const box = document.querySelector(`.field-box[data-id="${id}"]`);
-      if (!box) return;
-      box.dataset.hidden = hidden ? 'true' : 'false';
-      updateFieldVisibilityForView();
-      logDebug((hidden ? 'Hid ' : 'Showed ') + id);
-    }
+    layer.appendChild(el);
+    log(`Added floating field ${fieldCode}`);
+  }
 
-    function updateFieldVisibilityForView() {
-      document.querySelectorAll('.field-box').forEach(box => {
-        const hidden = box.dataset.hidden === 'true';
-        if (currentView === 'form') {
-          box.style.display = hidden ? 'none' : 'flex';
-          box.style.opacity = '1';
-        } else {
-          box.style.display = 'flex';
-          box.style.opacity = hidden ? '0.25' : '1';
-        }
-      });
-    }
+  // ===== CANVAS DROP HANDLING =====
+  function initCanvasDrop() {
+    const canvas = document.getElementById("canvas");
 
-    // ---------- Designer side panel ----------
-    function initDesignerPanel() {
-      const list = document.getElementById('designerPanelList');
-      list.innerHTML = '';
+    canvas.addEventListener("dragover", function(e) {
+      e.preventDefault();
+    });
 
-      FIELD_DEFS.forEach(def => {
-        const row = document.createElement('div');
-        row.className = 'designer-row';
-        row.dataset.id = def.id;
-
-        const label = document.createElement('div');
-        label.className = 'designer-row-label';
-        label.textContent = def.label;
-
-        const cat = document.createElement('div');
-        cat.className = 'designer-row-cat';
-        cat.textContent = def.category;
-
-        const toggle = document.createElement('label');
-        toggle.className = 'designer-row-toggle';
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.checked = !def.default.hidden;
-        checkbox.dataset.id = def.id;
-        const txt = document.createElement('span');
-        txt.textContent = 'Show';
-
-        toggle.appendChild(checkbox);
-        toggle.appendChild(txt);
-
-        row.appendChild(label);
-        row.appendChild(cat);
-        row.appendChild(toggle);
-
-        row.addEventListener('click', (e) => {
-          if (e.target.tagName.toLowerCase() === 'input') return;
-          const box = document.querySelector(`.field-box[data-id="${def.id}"]`);
-          if (!box) return;
-          box.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
-        });
-
-        checkbox.addEventListener('change', e => {
-          const id = e.target.dataset.id;
-          setFieldHidden(id, !e.target.checked);
-        });
-
-        list.appendChild(row);
-      });
-
-      updateDesignerPanelCheckboxes();
-    }
-
-    function updateDesignerPanelCheckboxes() {
-      document.querySelectorAll('#designerPanelList input[type="checkbox"]').forEach(cb => {
-        const id = cb.dataset.id;
-        const box = document.querySelector(`.field-box[data-id="${id}"]`);
-        if (!box) return;
-        cb.checked = !(box.dataset.hidden === 'true');
-      });
-    }
-
-    // ---------- Memo / history ----------
-    const memoHistoryEl = document.getElementById('memoHistory');
-    const memoEditorEl = document.getElementById('memoEditor');
-    const logChangesToggleEl = document.getElementById('logChangesToggle');
-
-    function appendHistoryEntry(text) {
-      const item = document.createElement('div');
-      item.className = 'memo-history-item';
-      const meta = document.createElement('div');
-      meta.className = 'memo-history-meta';
-      const ts = new Date().toLocaleString();
-      meta.textContent = ts + ' – UI (prototype)';
-      const body = document.createElement('div');
-      body.className = 'memo-history-text';
-      body.textContent = text;
-      item.appendChild(meta);
-      item.appendChild(body);
-      memoHistoryEl.prepend(item);
-    }
-
-    function onFieldChanged(e) {
-      if (!logChangesToggleEl.checked) return;
-      const fieldName = e.target.dataset.field || '(unknown)';
-      let newValue = '';
-      if (e.target.type === 'checkbox') {
-        newValue = e.target.checked ? 'Yes' : 'No';
-      } else {
-        newValue = e.target.value;
+    canvas.addEventListener("drop", function(e) {
+      e.preventDefault();
+      // If dropped on group body, that handler will have fired; ignore here.
+      const data = e.dataTransfer.getData("application/json") || e.dataTransfer.getData("text/plain");
+      if (!data) return;
+      let field;
+      try {
+        field = JSON.parse(data);
+      } catch {
+        const code = data;
+        field = FIELD_BANK.find(f => f.code === code) || { code, label: code };
       }
-      const labelEl = e.target.closest('.field-row')?.querySelector('.field-label');
-      const prettyLabel = labelEl ? labelEl.textContent.trim() : fieldName;
-      appendHistoryEntry(prettyLabel + ' → ' + newValue);
+
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      addFloatingField(field.code, field.label, x, y);
+    });
+  }
+
+  // ===== GLOBAL MOUSE MOVE / UP FOR DRAG & RESIZE =====
+  document.addEventListener("mousemove", function(e) {
+    const canvas = document.getElementById("canvas");
+    const canvasRect = canvas.getBoundingClientRect();
+
+    if (dragState) {
+      const group = groups.find(g => g.id === dragState.groupId);
+      const el = document.querySelector(`.group-box[data-id="${dragState.groupId}"]`);
+      if (!group || !el) return;
+      let x = e.clientX - dragState.offsetX;
+      let y = e.clientY - dragState.offsetY;
+      // Keep within canvas somewhat
+      x = Math.max(0, x);
+      y = Math.max(0, y);
+      x = Math.min(canvasRect.width - 80, x);
+      y = Math.min(canvasRect.height - 40, y);
+      group.x = snap(x);
+      group.y = snap(y);
+      el.style.left = group.x + "px";
+      el.style.top = group.y + "px";
     }
 
-    // ---------- Debug ----------
-    const debugEl = document.getElementById('debug');
-    function logDebug(msg) {
-      const line = document.createElement('div');
-      const ts = new Date().toLocaleTimeString();
-      line.className = 'debug-entry';
-      line.textContent = '[' + ts + '] ' + msg;
-      debugEl.prepend(line);
+    if (resizeState) {
+      const group = groups.find(g => g.id === resizeState.groupId);
+      const el = document.querySelector(`.group-box[data-id="${resizeState.groupId}"]`);
+      if (!group || !el) return;
+      let w = resizeState.startW + (e.clientX - resizeState.startX);
+      let h = resizeState.startH + (e.clientY - resizeState.startY);
+      w = Math.max(160, w);
+      h = Math.max(60, h);
+      group.w = snap(w);
+      group.h = snap(h);
+      el.style.width = group.w + "px";
+      el.style.height = group.h + "px";
     }
 
-    // ---------- Init ----------
-    initCanvas();
-    initDesignerPanel();
-    logDebug('UI + Designer prototype initialised');
-  </script>
+    if (floatDragState) {
+      const field = floatingFields.find(f => f.id === floatDragState.id);
+      const el = document.querySelector(`.floating-field[data-id="${floatDragState.id}"]`);
+      if (!field || !el) return;
+      let x = e.clientX - floatDragState.offsetX;
+      let y = e.clientY - floatDragState.offsetY;
+      x = Math.max(0, x);
+      y = Math.max(0, y);
+      x = Math.min(canvasRect.width - 60, x);
+      y = Math.min(canvasRect.height - 20, y);
+      field.x = snap(x);
+      field.y = snap(y);
+      el.style.left = field.x + "px";
+      el.style.top = field.y + "px";
+    }
+  });
+
+  document.addEventListener("mouseup", function() {
+    if (dragState) {
+      log("Group moved: " + dragState.groupId);
+      dragState = null;
+    }
+    if (resizeState) {
+      log("Group resized: " + resizeState.groupId);
+      resizeState = null;
+    }
+    if (floatDragState) {
+      log("Floating field moved: " + floatDragState.id);
+      floatDragState = null;
+    }
+  });
+
+  // ===== LAYOUT SAVE / LOAD =====
+  function collectLayout() {
+    const layout = {
+      groups: [],
+      floatingFields: []
+    };
+
+    groups.forEach(g => {
+      const el = document.querySelector(`.group-box[data-id="${g.id}"]`);
+      const body = el ? el.querySelector(".group-body") : null;
+      const fields = [];
+      if (body) {
+        body.querySelectorAll(".field-row").forEach(row => {
+          fields.push({
+            fieldCode: row.dataset.fieldCode,
+            label: row.querySelector(".field-label").textContent
+          });
+        });
+      }
+      layout.groups.push({
+        id: g.id,
+        title: g.title,
+        colour: g.colour,
+        x: g.x,
+        y: g.y,
+        w: g.w,
+        h: g.h,
+        collapsed: g.collapsed,
+        fields
+      });
+    });
+
+    const layer = document.getElementById("floatingLayer");
+    if (layer) {
+      layer.querySelectorAll(".floating-field").forEach(el => {
+        const id = el.dataset.id;
+        const field = floatingFields.find(f => f.id === id);
+        if (!field) return;
+        layout.floatingFields.push({
+          id: field.id,
+          fieldCode: field.fieldCode,
+          label: field.label,
+          x: field.x,
+          y: field.y
+        });
+      });
+    }
+
+    return layout;
+  }
+
+  function applyLayout(layout) {
+    const canvas = document.getElementById("canvas");
+    canvas.innerHTML = "";
+
+    groups = [];
+    floatingFields = [];
+
+    // Groups
+    if (Array.isArray(layout.groups)) {
+      layout.groups.forEach(g => {
+        const group = {
+          id: g.id || makeId("group"),
+          title: g.title || g.id || "Group",
+          colour: g.colour || "#4b5563",
+          x: g.x || 20,
+          y: g.y || 20,
+          w: g.w || 260,
+          h: g.h || 120,
+          collapsed: !!g.collapsed,
+          fields: Array.isArray(g.fields) ? g.fields : []
+        };
+        groups.push(group);
+        const el = createGroupElement(group);
+        canvas.appendChild(el);
+
+        // Populate fields into body
+        const body = el.querySelector(".group-body");
+        group.fields.forEach(f => {
+          const row = document.createElement("div");
+          row.className = "field-row";
+          row.dataset.fieldCode = f.fieldCode;
+          const lbl = document.createElement("div");
+          lbl.className = "field-label";
+          lbl.textContent = f.label;
+          const input = document.createElement("input");
+          input.className = "field-input";
+          input.placeholder = f.label;
+          input.dataset.fieldCode = f.fieldCode;
+          row.appendChild(lbl);
+          row.appendChild(input);
+          body.appendChild(row);
+        });
+      });
+    }
+
+    // Floating layer
+    const floatLayer = document.createElement("div");
+    floatLayer.id = "floatingLayer";
+    floatLayer.style.position = "absolute";
+    floatLayer.style.inset = "0";
+    floatLayer.style.pointerEvents = "none";
+    canvas.appendChild(floatLayer);
+
+    // Floating fields
+    if (Array.isArray(layout.floatingFields)) {
+      layout.floatingFields.forEach(f => {
+        addFloatingField(f.fieldCode, f.label, f.x || 40, f.y || 40);
+      });
+    }
+
+    log("Layout applied from JSON");
+  }
+
+  function downloadLayout() {
+    const layout = collectLayout();
+    const blob = new Blob([JSON.stringify(layout, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "avd_layout.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    log("Layout saved as avd_layout.json");
+  }
+
+  function loadLayoutFromFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(ev) {
+      try {
+        const layout = JSON.parse(ev.target.result);
+        applyLayout(layout);
+      } catch (err) {
+        log("Error parsing layout JSON: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  }
+
+  function resetLayout() {
+    initGroups();
+    log("Layout reset to defaults");
+  }
+
+  // ===== INIT =====
+  window.addEventListener("DOMContentLoaded", function() {
+    initGroups();
+    initPalette();
+    initCanvasDrop();
+    log("Lotus-style layout designer ready");
+  });
+</script>
 </body>
 </html>
