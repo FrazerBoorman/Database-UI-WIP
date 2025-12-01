@@ -1,0 +1,845 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>AVD Venue Database – Demo Form</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      /* Modernised “Lotus-ish” palette – tweak to taste */
+      --bg: #101827;
+      --window-bg: #e6e5df;
+      --panel-bg: #f7f6f2;
+      --panel-border: #b3b1aa;
+      --label: #333;
+      --input-bg: #ffffff;
+      --input-border: #b0b0b0;
+      --accent: #1769aa;
+      --accent-soft: #ddebfa;
+      --warning: #d97706;
+      --danger: #b91c1c;
+      --memo-bg: #fffdf5;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 16px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #223, #000);
+      color: #111;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .lotus-window {
+      background: var(--window-bg);
+      border-radius: 6px;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+      border: 1px solid #555;
+      max-width: 1400px;
+      width: 100%;
+      padding: 8px 8px 10px;
+    }
+
+    .lotus-titlebar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px;
+      background: linear-gradient(to bottom, #fdfdfd, #dedede);
+      border: 1px solid #9c9c9c;
+      border-radius: 4px;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .lotus-buttons {
+      display: flex;
+      gap: 4px;
+    }
+
+    .lotus-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(0,0,0,0.4);
+    }
+    .lotus-dot.red { background:#f87171; }
+    .lotus-dot.yellow { background:#facc15; }
+    .lotus-dot.green { background:#4ade80; }
+
+    .lotus-titlebar span {
+      flex: 1;
+      text-align: center;
+    }
+
+    .lotus-toolbar {
+      display: flex;
+      gap: 6px;
+      margin: 8px 2px;
+    }
+
+    .toolbar-button {
+      padding: 3px 10px;
+      border-radius: 3px;
+      border: 1px solid #9c9c9c;
+      background: linear-gradient(to bottom, #ffffff, #dedede);
+      font-size: 12px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+    .toolbar-button.primary {
+      border-color: var(--accent);
+      background: linear-gradient(to bottom, #e0f0ff, #bfdcff);
+      color: #12355b;
+      font-weight: 600;
+    }
+
+    form.db-form {
+      display: grid;
+      grid-template-columns: 1.3fr 1.1fr;
+      grid-template-rows: auto auto auto;
+      gap: 8px;
+      font-size: 12px;
+    }
+
+    .panel {
+      background: var(--panel-bg);
+      border-radius: 4px;
+      border: 1px solid var(--panel-border);
+      padding: 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .panel-header {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #555;
+      margin-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel-header span.title-main {
+      font-weight: 700;
+    }
+
+    /* Forms & fields */
+    .field-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 4px 6px;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+    }
+
+    .field-half {
+      grid-column: span 2;
+    }
+
+    .field-full {
+      grid-column: 1 / -1;
+    }
+
+    .field label {
+      font-size: 10px;
+      color: var(--label);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="date"],
+    select,
+    textarea {
+      border-radius: 2px;
+      border: 1px solid var(--input-border);
+      background: var(--input-bg);
+      padding: 3px 4px;
+      font-size: 11px;
+      font-family: inherit;
+    }
+
+    select {
+      padding-right: 18px;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 52px;
+    }
+
+    .field-inline {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+    }
+    .field-inline label {
+      margin: 0;
+      text-transform: none;
+      letter-spacing: normal;
+      font-size: 11px;
+    }
+
+    .field-inline input[type="checkbox"] {
+      margin: 0;
+      width: 13px;
+      height: 13px;
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 2px 6px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: #12355b;
+      border: 1px solid rgba(23,105,170,0.4);
+    }
+
+    .tag.warn {
+      background: #fef3c7;
+      border-color: #fbbf24;
+      color: #92400e;
+    }
+
+    .tag.danger {
+      background: #fee2e2;
+      border-color: #dc2626;
+      color: #991b1b;
+    }
+
+    /* Memos panel */
+    .memos-panel {
+      grid-column: 1 / -1;
+      background: var(--memo-bg);
+    }
+
+    .memo-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1.1fr;
+      gap: 8px;
+    }
+
+    .memo-group-title {
+      font-size: 11px;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .memo-field label {
+      font-size: 10px;
+      color: var(--label);
+    }
+
+    .memo-field textarea {
+      width: 100%;
+    }
+
+    /* Status bar (bottom) */
+    .status-bar {
+      margin-top: 6px;
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      color: #444;
+    }
+
+    .status-bar span {
+      padding: 2px 4px;
+    }
+
+    @media (max-width: 1024px) {
+      form.db-form {
+        grid-template-columns: 1fr;
+      }
+      .memo-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="lotus-window">
+  <div class="lotus-titlebar">
+    <div class="lotus-buttons">
+      <div class="lotus-dot red"></div>
+      <div class="lotus-dot yellow"></div>
+      <div class="lotus-dot green"></div>
+    </div>
+    <span>AVD Venue / Job Database – Demo Layout</span>
+    <span style="width:40px;"></span>
+  </div>
+
+  <div class="lotus-toolbar">
+    <button type="button" class="toolbar-button primary">Save</button>
+    <button type="button" class="toolbar-button">New</button>
+    <button type="button" class="toolbar-button">Find</button>
+    <button type="button" class="toolbar-button">List</button>
+    <button type="button" class="toolbar-button">Delete</button>
+    <button type="button" class="toolbar-button">Print</button>
+    <button type="button" class="toolbar-button">Debug</button>
+  </div>
+
+  <form class="db-form">
+    <!-- LEFT TOP: VENUE / VENUE DETAILS -->
+    <section class="panel">
+      <div class="panel-header">
+        <span class="title-main">Venue Details</span>
+        <span class="tag">Main</span>
+      </div>
+      <div class="field-grid">
+        <div class="field field-full">
+          <label for="company">Venue / Organisation</label>
+          <input type="text" id="company" name="company" />
+        </div>
+
+        <div class="field field-full">
+          <label for="address">Address Line 1</label>
+          <input type="text" id="address" name="address" />
+        </div>
+
+        <div class="field field-full">
+          <label for="address1">Address Line 2</label>
+          <input type="text" id="address1" name="address1" />
+        </div>
+
+        <div class="field field-full">
+          <label for="address2">Address Line 3</label>
+          <input type="text" id="address2" name="address2" />
+        </div>
+
+        <div class="field field-half">
+          <label for="area">Area</label>
+          <!-- in real app, this becomes a huge dropdown / autocomplete -->
+          <input type="text" id="area" name="area" />
+        </div>
+
+        <div class="field field-half">
+          <label for="town">Town / City</label>
+          <!-- real app: dropdown / autocomplete from enums -->
+          <input type="text" id="town" name="town" />
+        </div>
+
+        <div class="field">
+          <label for="county">County</label>
+          <!-- small enough to be a dropdown in final version -->
+          <input type="text" id="county" name="county" />
+        </div>
+
+        <div class="field">
+          <label for="country">Country</label>
+          <select id="country" name="country">
+            <option value="">(Select)</option>
+            <!-- values drawn from enum_output_enhanced.json / country -->
+            <option value="England">England</option>
+            <option value="Wales">Wales</option>
+            <option value="Scotland">Scotland</option>
+            <option value="Ireland">Ireland</option>
+            <option value="Channel Islands">Channel Islands</option>
+            <option value="Belgium">Belgium</option>
+            <option value="France">France</option>
+            <option value="Germany">Germany</option>
+            <option value="Spain">Spain</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="postcode">Postcode</label>
+          <input type="text" id="postcode" name="postcode" />
+        </div>
+
+        <div class="field">
+          <label for="classifica">Classification</label>
+          <!-- real app: dropdown from classifica enums -->
+          <input type="text" id="classifica" name="classifica" />
+        </div>
+
+        <div class="field">
+          <label for="identifica">Identification</label>
+          <!-- real app: dropdown from identifica enums -->
+          <input type="text" id="identifica" name="identifica" />
+        </div>
+
+        <div class="field">
+          <label for="market">Market</label>
+          <select id="market" name="market">
+            <option value="">(Select)</option>
+            <!-- examples from enum_output_enhanced.json / market -->
+            <option value="Chur/Hall">Church / Hall</option>
+            <option value="Charity">Charity</option>
+            <option value="Education">Education</option>
+            <option value="Healthcare">Healthcare</option>
+            <option value="Leisure">Leisure</option>
+            <option value="Business">Business</option>
+            <option value="Government">Government</option>
+            <option value="Contractor">Contractor</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="denominati">Denomination</label>
+          <!-- real app: dropdown from denominati enums -->
+          <input type="text" id="denominati" name="denominati" />
+        </div>
+
+      </div>
+    </section>
+
+    <!-- RIGHT TOP: CONTACTS -->
+    <section class="panel">
+      <div class="panel-header">
+        <span class="title-main">Contacts & Communication</span>
+        <span class="tag">People</span>
+      </div>
+
+      <div class="field-grid">
+        <!-- 1st Contact -->
+        <div class="field field-full">
+          <label>1st Contact</label>
+        </div>
+
+        <div class="field">
+          <label for="prefix_1">Prefix</label>
+          <input type="text" id="prefix_1" name="prefix_1" />
+        </div>
+        <div class="field">
+          <label for="first_name">First Name</label>
+          <input type="text" id="first_name" name="first_name" />
+        </div>
+        <div class="field">
+          <label for="last_name">Last Name</label>
+          <input type="text" id="last_name" name="last_name" />
+        </div>
+        <div class="field">
+          <label for="job_title">Job Title</label>
+          <input type="text" id="job_title" name="job_title" />
+        </div>
+
+        <div class="field">
+          <label for="mobile_1">Mobile</label>
+          <input type="text" id="mobile_1" name="mobile_1" />
+        </div>
+        <div class="field field-half">
+          <label for="email">Email</label>
+          <input type="text" id="email" name="email" />
+        </div>
+        <div class="field">
+          <label for="phone_1">Phone</label>
+          <input type="text" id="phone_1" name="phone_1" />
+        </div>
+
+        <!-- 2nd Contact -->
+        <div class="field field-full" style="margin-top:4px;">
+          <label>2nd Contact</label>
+        </div>
+
+        <div class="field">
+          <label for="prefix_2">Prefix</label>
+          <input type="text" id="prefix_2" name="prefix_2" />
+        </div>
+        <div class="field">
+          <label for="first_nam2">First Name</label>
+          <input type="text" id="first_nam2" name="first_nam2" />
+        </div>
+        <div class="field">
+          <label for="last_name_">Last Name</label>
+          <input type="text" id="last_name_" name="last_name_" />
+        </div>
+        <div class="field">
+          <label for="job_title_2">Job Title 2 (free)</label>
+          <input type="text" id="job_title_2" name="job_title_2" />
+        </div>
+
+        <div class="field">
+          <label for="phone_2">Phone</label>
+          <input type="text" id="phone_2" name="phone_2" />
+        </div>
+        <div class="field field-half">
+          <label for="email_2">Email</label>
+          <input type="text" id="email_2" name="email_2" />
+        </div>
+
+        <!-- 3rd Contact -->
+        <div class="field field-full" style="margin-top:4px;">
+          <label>3rd Contact</label>
+        </div>
+
+        <div class="field field-half">
+          <label for="contact_3">Name</label>
+          <input type="text" id="contact_3" name="contact_3" />
+        </div>
+        <div class="field">
+          <label for="phone_3">Phone</label>
+          <input type="text" id="phone_3" name="phone_3" />
+        </div>
+        <div class="field">
+          <label for="email_3">Email</label>
+          <input type="text" id="email_3" name="email_3" />
+        </div>
+
+        <!-- 4th Contact / Minister -->
+        <div class="field field-full" style="margin-top:4px;">
+          <label>4th Contact / Minister</label>
+        </div>
+
+        <div class="field field-half">
+          <label for="contact_4">Name</label>
+          <input type="text" id="contact_4" name="contact_4" />
+        </div>
+        <div class="field">
+          <label for="phone_4">Phone</label>
+          <input type="text" id="phone_4" name="phone_4" />
+        </div>
+        <div class="field">
+          <label for="email_4">Email</label>
+          <input type="text" id="email_4" name="email_4" />
+        </div>
+
+        <!-- Accounts -->
+        <div class="field field-full" style="margin-top:4px;">
+          <label>Accounts Contact</label>
+        </div>
+
+        <div class="field field-half">
+          <label for="accounts_contact">Accounts Contact (Name)</label>
+          <!-- mapped onto existing contact_4 or free field later -->
+          <input type="text" id="accounts_contact" name="accounts_contact" />
+        </div>
+        <div class="field field-half">
+          <label for="email_acco">Accounts Email</label>
+          <input type="text" id="email_acco" name="email_acco" />
+        </div>
+      </div>
+    </section>
+
+    <!-- LEFT MID: SALES / GP -->
+    <section class="panel">
+      <div class="panel-header">
+        <span class="title-main">Sales & GP</span>
+        <span class="tag warn">Commercial</span>
+      </div>
+
+      <div class="field-grid">
+        <div class="field field-half">
+          <label for="status_of_">Status of Job</label>
+          <!-- maps to status_of_ -->
+          <input type="text" id="status_of_" name="status_of_" />
+        </div>
+
+        <div class="field">
+          <label for="made_by">Made By</label>
+          <select id="made_by" name="made_by">
+            <option value="">(Select)</option>
+            <option value="Adam">Adam</option>
+            <option value="Dave">Dave</option>
+            <option value="David">David</option>
+            <option value="Helen">Helen</option>
+            <option value="Joe">Joe</option>
+            <option value="Josh">Josh</option>
+            <option value="Mark">Mark</option>
+            <option value="Neil">Neil</option>
+            <option value="Steven">Steven</option>
+          </select>
+        </div>
+
+        <div class="field">
+          <label for="consultant">Consultant</label>
+          <input type="text" id="consultant" name="consultant" />
+          <!-- real app: dropdown from consultant enums -->
+        </div>
+
+        <div class="field">
+          <label for="date_made">Date Made</label>
+          <input type="date" id="date_made" name="date_made" />
+        </div>
+
+        <div class="field">
+          <label for="date_expec">Expected Month</label>
+          <input type="text" id="month_expe" name="month_expe" />
+        </div>
+
+        <div class="field">
+          <label for="date_sold">Date Sold</label>
+          <input type="date" id="date_sold" name="date_sold" />
+        </div>
+
+        <div class="field">
+          <label for="job___days">Job Days</label>
+          <input type="number" step="0.01" id="job___days" name="job___days" />
+        </div>
+
+        <div class="field">
+          <label for="job___man_">Man Days</label>
+          <input type="number" step="0.01" id="job___man_" name="job___man_" />
+        </div>
+
+        <div class="field">
+          <label for="job___mile">Miles</label>
+          <input type="number" step="0.01" id="job___mile" name="job___mile" />
+        </div>
+
+        <div class="field">
+          <label for="revenue">Revenue £</label>
+          <input type="number" step="0.01" id="revenue" name="revenue" />
+        </div>
+
+        <div class="field">
+          <label for="gp___est">GP Est £</label>
+          <input type="number" step="0.01" id="gp___est" name="gp___est" />
+        </div>
+
+        <div class="field">
+          <label for="gp__">GP %</label>
+          <input type="number" step="0.01" id="gp__" name="gp__" />
+        </div>
+
+        <div class="field">
+          <label for="gp_dif____">GP Diff £</label>
+          <input type="number" step="0.01" id="gp_dif____" name="gp_dif____" />
+        </div>
+
+        <div class="field">
+          <label for="gp___act">GP Actual £</label>
+          <input type="number" step="0.01" id="gp___act" name="gp___act" />
+        </div>
+
+        <div class="field">
+          <label for="invoice_am">Invoice Amount £</label>
+          <input type="number" step="0.01" id="invoice_am" name="invoice_am" />
+        </div>
+
+        <div class="field">
+          <label for="invoice_ba">Invoice Balance £</label>
+          <input type="number" step="0.01" id="invoice_ba" name="invoice_ba" />
+        </div>
+
+        <div class="field">
+          <label for="paid_1__">Paid 1 £</label>
+          <input type="number" step="0.01" id="paid_1__" name="paid_1__" />
+        </div>
+
+        <div class="field">
+          <label for="paid_2__">Paid 2 £</label>
+          <input type="number" step="0.01" id="paid_2__" name="paid_2__" />
+        </div>
+
+        <div class="field">
+          <label for="paid_1">Paid 1 Date</label>
+          <input type="date" id="paid_1" name="paid_1" />
+        </div>
+
+        <div class="field">
+          <label for="paid_2">Paid 2 Date</label>
+          <input type="date" id="paid_2" name="paid_2" />
+        </div>
+
+        <div class="field">
+          <label for="date_bal_s">Balance Sent</label>
+          <input type="date" id="date_bal_s" name="date_bal_s" />
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT MID: SERVICE / INSTALL / FLAGS -->
+    <section class="panel">
+      <div class="panel-header">
+        <span class="title-main">Service, Install & Flags</span>
+        <span class="tag danger">Ops</span>
+      </div>
+
+      <div class="field-grid">
+        <div class="field">
+          <label for="audio">Audio Installed</label>
+          <input type="date" id="audio" name="audio" />
+        </div>
+        <div class="field">
+          <label for="visual">Visual Installed</label>
+          <input type="date" id="visual" name="visual" />
+        </div>
+        <div class="field">
+          <label for="loop">Loop Installed</label>
+          <input type="date" id="loop" name="loop" />
+        </div>
+        <div class="field">
+          <label for="stream">Streaming Live</label>
+          <input type="date" id="stream" name="stream" />
+        </div>
+
+        <div class="field">
+          <label for="job_instal">Date Installed</label>
+          <input type="date" id="job_instal" name="job_instal" />
+        </div>
+        <div class="field">
+          <label for="job_comple">Date Completed</label>
+          <input type="date" id="job_comple" name="job_comple" />
+        </div>
+        <div class="field">
+          <label for="service_op">Service Open</label>
+          <input type="date" id="service_op" name="service_op" />
+        </div>
+        <div class="field">
+          <label for="service_cl">Service Closed</label>
+          <input type="date" id="service_cl" name="service_cl" />
+        </div>
+
+        <div class="field">
+          <label for="service_bo">Service Booked</label>
+          <input type="date" id="service_bo" name="service_bo" />
+        </div>
+        <div class="field">
+          <label for="confirmed">Confirmed</label>
+          <input type="date" id="confirmed" name="confirmed" />
+        </div>
+        <div class="field">
+          <label for="recce_type">Recce Type</label>
+          <input type="text" id="recce_type" name="recce_type" />
+        </div>
+        <div class="field">
+          <label for="recce_date">Recce Date</label>
+          <input type="date" id="recce_date" name="recce_date" />
+        </div>
+
+        <!-- Tick boxes -->
+        <div class="field-inline field-half" style="margin-top:4px;">
+          <input type="checkbox" id="area___10m" name="area___10m" />
+          <label for="area___10m">Within 10 miles</label>
+        </div>
+        <div class="field-inline field-half" style="margin-top:4px;">
+          <input type="checkbox" id="area___25m" name="area___25m" />
+          <label for="area___25m">Within 25 miles</label>
+        </div>
+        <div class="field-inline field-half">
+          <input type="checkbox" id="area___50m" name="area___50m" />
+          <label for="area___50m">Within 50 miles</label>
+        </div>
+        <div class="field-inline field-half">
+          <input type="checkbox" id="avw" name="avw" />
+          <label for="avw">AVW</label>
+        </div>
+
+        <div class="field-inline field-half">
+          <input type="checkbox" id="bad_email" name="bad_email" />
+          <label for="bad_email">Bad Email</label>
+        </div>
+        <div class="field-inline field-half">
+          <input type="checkbox" id="exc_chase" name="exc_chase" />
+          <label for="exc_chase">Exclude from Chasing</label>
+        </div>
+        <div class="field-inline field-half">
+          <input type="checkbox" id="negotiatin" name="negotiatin" />
+          <label for="negotiatin">Negotiable</label>
+        </div>
+        <div class="field-inline field-half">
+          <input type="checkbox" id="wsm_member" name="wsm_member" />
+          <label for="wsm_member">WSM Member</label>
+        </div>
+
+        <div class="field field-full">
+          <label for="territory">Territory</label>
+          <input type="text" id="territory" name="territory" />
+        </div>
+
+        <div class="field field-full">
+          <label for="service_ty">Service Type</label>
+          <input type="text" id="service_ty" name="service_ty" />
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BOTTOM: MEMOS -->
+    <section class="panel memos-panel">
+      <div class="panel-header">
+        <span class="title-main">Notes, Requirements & Technical Memos</span>
+        <span class="tag">Memos</span>
+      </div>
+
+      <div class="memo-grid">
+        <div>
+          <div class="memo-group-title">Job & Venue</div>
+
+          <div class="memo-field">
+            <label for="job_requir">Job Requirements (job_requir)</label>
+            <textarea id="job_requir" name="job_requir"></textarea>
+          </div>
+
+          <div class="memo-field">
+            <label for="notes_main">Main Notes (notes_main)</label>
+            <textarea id="notes_main" name="notes_main"></textarea>
+          </div>
+
+          <div class="memo-field">
+            <label for="local_inst">Local Install Notes (local_inst)</label>
+            <textarea id="local_inst" name="local_inst"></textarea>
+          </div>
+
+          <div class="memo-field">
+            <label for="job_costs">Job Costs / Breakdown (job_costs)</label>
+            <textarea id="job_costs" name="job_costs"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <div class="memo-group-title">Technical / Recce / Feedback</div>
+
+          <div class="memo-field">
+            <label for="recce_feed">Recce Notes (recce_feed)</label>
+            <textarea id="recce_feed" name="recce_feed"></textarea>
+          </div>
+
+          <div class="memo-field">
+            <label for="service_is">Service Issues / Conclusion (service_is)</label>
+            <textarea id="service_is" name="service_is"></textarea>
+          </div>
+
+          <div class="memo-field">
+            <label for="equipment_">Equipment List (equipment_)</label>
+            <textarea id="equipment_" name="equipment_"></textarea>
+          </div>
+
+          <div class="memo-field">
+            <label for="cabling___">Cabling Notes (cabling___)</label>
+            <textarea id="cabling___" name="cabling___"></textarea>
+          </div>
+
+          <div class="memo-field">
+            <label for="feedback__">Feedback 1 (feedback__)</label>
+            <textarea id="feedback__" name="feedback__"></textarea>
+          </div>
+
+          <div class="memo-field">
+            <label for="feedback_2">Feedback 2 (feedback_2)</label>
+            <textarea id="feedback_2" name="feedback_2"></textarea>
+          </div>
+
+          <div class="memo-field">
+            <label for="feedback_3">Feedback 3 (feedback_3)</label>
+            <textarea id="feedback_3" name="feedback_3"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+  </form>
+
+  <div class="status-bar">
+    <span>Record: [   ] &nbsp; | &nbsp; Last Modified: [        ]</span>
+    <span>AVD – Demo Only (no backend wired)</span>
+  </div>
+</div>
+</body>
+</html>
