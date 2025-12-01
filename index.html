@@ -1,845 +1,1535 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark" data-view="form">
 <head>
   <meta charset="utf-8" />
-  <title>AVD Venue Database – Demo Form</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AVD Venue Database – Prototype UI + Designer</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <style>
     :root {
-      /* Modernised “Lotus-ish” palette – tweak to taste */
-      --bg: #101827;
-      --window-bg: #e6e5df;
-      --panel-bg: #f7f6f2;
-      --panel-border: #b3b1aa;
-      --label: #333;
-      --input-bg: #ffffff;
-      --input-border: #b0b0b0;
-      --accent: #1769aa;
-      --accent-soft: #ddebfa;
-      --warning: #d97706;
-      --danger: #b91c1c;
-      --memo-bg: #fffdf5;
+      --bg-dark: #020617;
+      --bg-dark-elevated: #02091b;
+      --bg-light: #f8fafc;
+      --bg-light-elevated: #ffffff;
+
+      --border-subtle-dark: #1f2937;
+      --border-subtle-light: #d1d5db;
+
+      --text-dark: #e5e7eb;
+      --muted-dark: #9ca3af;
+      --text-light: #0f172a;
+      --muted-light: #6b7280;
+
+      --color-venue: #0ea5e9;
+      --color-sales: #22c55e;
+      --color-service: #f97316;
+      --color-flags: #a855f7;
+      --color-contacts: #eab308;
+      --color-misc: #ec4899;
+
+      --field-bg-dark: rgba(15,23,42,0.9);
+      --field-bg-light: rgba(255,255,255,0.98);
+
+      --grid-color-dark: rgba(148,163,184,0.15);
+      --grid-color-light: rgba(148,163,184,0.3);
+
+      --memo-bg-dark: #020617;
+      --memo-bg-light: #f9fafb;
+
+      --toolbar-height: 56px;
+      --grid-size: 12px;
+      --field-radius: 8px;
+      --field-header-height: 26px;
     }
 
-    * { box-sizing: border-box; }
-
-    body {
+    html, body {
       margin: 0;
-      padding: 16px;
+      padding: 0;
+      height: 100%;
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: radial-gradient(circle at top left, #223, #000);
-      color: #111;
+    }
+
+    body[data-theme="dark"] {
+      background: radial-gradient(circle at top, #020617 0%, #020617 40%, #020617 100%);
+      color: var(--text-dark);
+    }
+
+    body[data-theme="light"] {
+      background: radial-gradient(circle at top, #e5f2ff 0%, #f9fafb 40%, #f9fafb 100%);
+      color: var(--text-light);
+    }
+
+    .app-shell {
       display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    .toolbar {
+      height: var(--toolbar-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      box-sizing: border-box;
+      backdrop-filter: blur(12px);
+      position: relative;
+      z-index: 10;
+    }
+
+    body[data-theme="dark"] .toolbar {
+      background: linear-gradient(to right, #020617f0, #020617e6);
+      border-bottom: 1px solid var(--border-subtle-dark);
+    }
+
+    body[data-theme="light"] .toolbar {
+      background: linear-gradient(to right, #ffffffee, #eff6ffdd);
+      border-bottom: 1px solid var(--border-subtle-light);
+    }
+
+    .toolbar-left,
+    .toolbar-center,
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .app-title {
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      opacity: 0.9;
+      margin-right: 12px;
+    }
+
+    .btn {
+      border-radius: 999px;
+      border: 1px solid transparent;
+      padding: 5px 10px;
+      font-size: 12px;
+      line-height: 1;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: transparent;
+      transition: background 0.12s ease, border-color 0.12s ease, color 0.12s ease, box-shadow 0.12s ease;
+      white-space: nowrap;
+    }
+
+    body[data-theme="dark"] .btn {
+      color: var(--muted-dark);
+      border-color: rgba(148,163,184,0.3);
+    }
+
+    body[data-theme="light"] .btn {
+      color: var(--muted-light);
+      border-color: rgba(148,163,184,0.5);
+    }
+
+    .btn:hover {
+      box-shadow: 0 0 0 1px rgba(148,163,184,0.6);
+      background: rgba(148,163,184,0.08);
+    }
+
+    .btn-primary {
+      font-weight: 500;
+    }
+
+    body[data-theme="dark"] .btn-primary {
+      background: #0ea5e9;
+      border-color: #0ea5e9;
+      color: white;
+    }
+
+    body[data-theme="light"] .btn-primary {
+      background: #2563eb;
+      border-color: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.05);
+    }
+
+    .btn-icon {
+      width: 26px;
+      height: 26px;
+      padding: 0;
+      border-radius: 999px;
       justify-content: center;
-      align-items: flex-start;
-      min-height: 100vh;
     }
 
-    .lotus-window {
-      background: var(--window-bg);
+    .pill {
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      cursor: default;
+    }
+
+    .pill-clickable {
+      cursor: pointer;
+    }
+
+    body[data-theme="dark"] .pill {
+      background: rgba(15,23,42,0.7);
+      border-color: rgba(148,163,184,0.4);
+      color: var(--muted-dark);
+    }
+
+    body[data-theme="light"] .pill {
+      background: rgba(255,255,255,0.9);
+      border-color: rgba(148,163,184,0.6);
+      color: var(--muted-light);
+    }
+
+    .pill-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .pill-theme-toggle {
+      font-size: 12px;
+      padding-inline: 8px;
+      cursor: pointer;
+    }
+
+    .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* View tabs */
+    .view-tabs {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px 0 8px;
+      box-sizing: border-box;
+    }
+
+    .view-tab {
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    body[data-theme="dark"] .view-tab {
+      color: var(--muted-dark);
+      border-color: transparent;
+      background: transparent;
+    }
+
+    body[data-theme="light"] .view-tab {
+      color: var(--muted-light);
+      border-color: transparent;
+      background: transparent;
+    }
+
+    .view-tab.active {
+      font-weight: 600;
+    }
+
+    body[data-theme="dark"] .view-tab.active {
+      background: rgba(15,23,42,0.9);
+      border-color: rgba(148,163,184,0.7);
+      color: var(--text-dark);
+    }
+
+    body[data-theme="light"] .view-tab.active {
+      background: #ffffff;
+      border-color: rgba(148,163,184,0.8);
+      color: var(--text-light);
+    }
+
+    .workspace {
+      flex: 1;
+      display: grid;
+      grid-template-rows: minmax(0, 3fr) minmax(0, 2fr);
+      gap: 6px;
+      padding: 6px;
+      box-sizing: border-box;
+    }
+
+    .canvas-and-designer {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 4fr) minmax(0, 1.8fr);
+      gap: 6px;
+      height: 100%;
+    }
+
+    /* For form view, hide designer panel column */
+    body[data-view="form"] .canvas-and-designer {
+      grid-template-columns: minmax(0, 1fr) 0;
+    }
+
+    body[data-view="form"] #designerPanel {
+      display: none;
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    body[data-theme="dark"] .canvas-wrapper {
+      background:
+        linear-gradient(to bottom, rgba(15,23,42,0.9), rgba(15,23,42,0.96)),
+        repeating-linear-gradient(to right,
+          var(--grid-color-dark) 0,
+          var(--grid-color-dark) 1px,
+          transparent 1px,
+          transparent var(--grid-size)
+        ),
+        repeating-linear-gradient(to bottom,
+          var(--grid-color-dark) 0,
+          var(--grid-color-dark) 1px,
+          transparent 1px,
+          transparent var(--grid-size)
+        );
+      border: 1px solid var(--border-subtle-dark);
+    }
+
+    body[data-theme="light"] .canvas-wrapper {
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.96), rgba(241,245,249,0.98)),
+        repeating-linear-gradient(to right,
+          var(--grid-color-light) 0,
+          var(--grid-color-light) 1px,
+          transparent 1px,
+          transparent var(--grid-size)
+        ),
+        repeating-linear-gradient(to bottom,
+          var(--grid-color-light) 0,
+          var(--grid-color-light) 1px,
+          transparent 1px,
+          transparent var(--grid-size)
+        );
+      border: 1px solid var(--border-subtle-light);
+    }
+
+    .canvas-toolbar {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      z-index: 5;
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      font-size: 11px;
+      opacity: 0.9;
+    }
+
+    .canvas {
+      position: absolute;
+      inset: 0;
+      padding: 32px 16px 16px 16px;
+      box-sizing: border-box;
+      overflow: auto;
+    }
+
+    .field-box {
+      position: absolute;
+      border-radius: var(--field-radius);
+      box-sizing: border-box;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      min-width: 120px;
+      min-height: 48px;
+      user-select: none;
+      cursor: default;
+      box-shadow: 0 4px 10px rgba(15,23,42,0.25);
+    }
+
+    body[data-theme="light"] .field-box {
+      box-shadow: 0 4px 12px rgba(15,23,42,0.18);
+    }
+
+    .field-header {
+      height: var(--field-header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 8px;
+      box-sizing: border-box;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: white;
+      cursor: grab;
+    }
+
+    .field-header span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .field-header-badge {
+      font-size: 9px;
+      padding: 1px 6px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.3);
+      border: 1px solid rgba(15,23,42,0.4);
+    }
+
+    .field-body {
+      flex: 1;
+      padding: 6px 8px 8px 8px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    body[data-theme="dark"] .field-body {
+      background: var(--field-bg-dark);
+      border: 1px solid rgba(15,23,42,0.9);
+    }
+
+    body[data-theme="light"] .field-body {
+      background: var(--field-bg-light);
+      border: 1px solid rgba(148,163,184,0.6);
+    }
+
+    .field-row {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .field-label {
+      font-size: 11px;
+      flex: 0 0 auto;
+      min-width: 80px;
+      color: inherit;
+      opacity: 0.9;
+    }
+
+    .field-input,
+    .field-select {
+      flex: 1;
+      font-size: 11px;
+      padding: 3px 6px;
+      border-radius: 4px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: rgba(15,23,42,0.8);
+      color: var(--text-dark);
+      box-sizing: border-box;
+    }
+
+    body[data-theme="light"] .field-input,
+    body[data-theme="light"] .field-select {
+      background: #ffffff;
+      color: var(--text-light);
+      border-color: rgba(148,163,184,0.8);
+    }
+
+    .field-input:focus,
+    .field-select:focus {
+      outline: 1px solid #0ea5e9;
+      border-color: #0ea5e9;
+    }
+
+    .field-checkbox {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+    }
+
+    .field-checkbox input {
+      margin: 0;
+    }
+
+    .field-checkbox label {
+      cursor: pointer;
+    }
+
+    .field-box[data-category="venue"] .field-header {
+      background: linear-gradient(to right, #0ea5e9, #38bdf8);
+    }
+
+    .field-box[data-category="contacts"] .field-header {
+      background: linear-gradient(to right, #eab308, #facc15);
+    }
+
+    .field-box[data-category="sales"] .field-header {
+      background: linear-gradient(to right, #22c55e, #4ade80);
+    }
+
+    .field-box[data-category="service"] .field-header {
+      background: linear-gradient(to right, #f97316, #fb923c);
+    }
+
+    .field-box[data-category="flags"] .field-header {
+      background: linear-gradient(to right, #a855f7, #c084fc);
+    }
+
+    .field-box[data-category="misc"] .field-header {
+      background: linear-gradient(to right, #ec4899, #f472b6);
+    }
+
+    .resize-handle {
+      position: absolute;
+      right: 2px;
+      bottom: 2px;
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      cursor: se-resize;
+      background: rgba(15,23,42,0.4);
+      border: 1px solid rgba(15,23,42,0.7);
+    }
+
+    body[data-theme="light"] .resize-handle {
+      background: rgba(148,163,184,0.5);
+      border-color: rgba(30,64,175,0.7);
+    }
+
+    .design-mode-indicator {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    body[data-theme="dark"] .design-mode-indicator {
+      background: rgba(248,250,252,0.1);
+      border: 1px solid rgba(148,163,184,0.6);
+      color: var(--muted-dark);
+    }
+
+    body[data-theme="light"] .design-mode-indicator {
+      background: rgba(15,23,42,0.06);
+      border: 1px solid rgba(148,163,184,0.8);
+      color: var(--muted-light);
+    }
+
+    /* Hidden sections styling */
+    .field-box[data-hidden="true"] {
+      /* In designer view we fade it, form view controls display via JS */
+      opacity: 0.25;
+      border-style: dashed;
+    }
+
+    /* Designer side panel */
+    #designerPanel {
+      border-radius: 10px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    body[data-theme="dark"] #designerPanel {
+      background: #020617;
+      border: 1px solid var(--border-subtle-dark);
+    }
+
+    body[data-theme="light"] #designerPanel {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle-light);
+    }
+
+    #designerPanelHeader {
+      padding: 6px 8px;
+      font-size: 11px;
+      border-bottom: 1px solid rgba(148,163,184,0.4);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    #designerPanelList {
+      flex: 1;
+      overflow: auto;
+      padding: 4px 6px 6px 6px;
+      box-sizing: border-box;
+      font-size: 11px;
+    }
+
+    .designer-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 4px;
       border-radius: 6px;
-      box-shadow: 0 16px 40px rgba(0,0,0,0.45);
-      border: 1px solid #555;
-      max-width: 1400px;
-      width: 100%;
-      padding: 8px 8px 10px;
+      cursor: pointer;
     }
 
-    .lotus-titlebar {
+    body[data-theme="dark"] .designer-row {
+      border: 1px solid transparent;
+    }
+
+    body[data-theme="light"] .designer-row {
+      border: 1px solid transparent;
+    }
+
+    .designer-row:hover {
+      border-color: rgba(148,163,184,0.6);
+      background: rgba(148,163,184,0.12);
+    }
+
+    .designer-row-label {
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .designer-row-cat {
+      font-size: 10px;
+      opacity: 0.7;
+    }
+
+    .designer-row-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 10px;
+    }
+
+    .designer-row-toggle input {
+      margin: 0;
+    }
+
+    /* Memo / bottom panel */
+    .memo-wrapper {
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      box-sizing: border-box;
+    }
+
+    body[data-theme="dark"] .memo-wrapper {
+      background: #020617;
+      border: 1px solid var(--border-subtle-dark);
+    }
+
+    body[data-theme="light"] .memo-wrapper {
+      background: #ffffff;
+      border: 1px solid var(--border-subtle-light);
+    }
+
+    .memo-toolbar {
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 4px 8px;
-      background: linear-gradient(to bottom, #fdfdfd, #dedede);
-      border: 1px solid #9c9c9c;
-      border-radius: 4px;
-      margin-bottom: 8px;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 11px;
+      border-bottom: 1px solid rgba(148,163,184,0.4);
     }
 
-    .lotus-buttons {
+    .memo-controls {
       display: flex;
-      gap: 4px;
+      gap: 6px;
+      align-items: center;
     }
 
-    .lotus-dot {
-      width: 10px;
-      height: 10px;
+    .memo-select {
+      font-size: 11px;
+      padding: 3px 6px;
       border-radius: 999px;
-      border: 1px solid rgba(0,0,0,0.4);
+      border: 1px solid rgba(148,163,184,0.6);
+      background: rgba(15,23,42,0.9);
+      color: var(--text-dark);
     }
-    .lotus-dot.red { background:#f87171; }
-    .lotus-dot.yellow { background:#facc15; }
-    .lotus-dot.green { background:#4ade80; }
 
-    .lotus-titlebar span {
+    body[data-theme="light"] .memo-select {
+      background: #ffffff;
+      color: var(--text-light);
+    }
+
+    .memo-body {
       flex: 1;
-      text-align: center;
-    }
-
-    .lotus-toolbar {
-      display: flex;
-      gap: 6px;
-      margin: 8px 2px;
-    }
-
-    .toolbar-button {
-      padding: 3px 10px;
-      border-radius: 3px;
-      border: 1px solid #9c9c9c;
-      background: linear-gradient(to bottom, #ffffff, #dedede);
-      font-size: 12px;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    .toolbar-button.primary {
-      border-color: var(--accent);
-      background: linear-gradient(to bottom, #e0f0ff, #bfdcff);
-      color: #12355b;
-      font-weight: 600;
-    }
-
-    form.db-form {
       display: grid;
-      grid-template-columns: 1.3fr 1.1fr;
-      grid-template-rows: auto auto auto;
-      gap: 8px;
-      font-size: 12px;
-    }
-
-    .panel {
-      background: var(--panel-bg);
-      border-radius: 4px;
-      border: 1px solid var(--panel-border);
-      padding: 8px;
-      display: flex;
-      flex-direction: column;
+      grid-template-columns: minmax(0, 2.5fr) minmax(0, 1.5fr);
       gap: 6px;
+      padding: 6px;
+      box-sizing: border-box;
     }
 
-    .panel-header {
+    .memo-editor {
+      width: 100%;
+      height: 100%;
+      padding: 6px;
+      box-sizing: border-box;
+      resize: none;
+      font-size: 12px;
+      border-radius: 6px;
+      border: 1px solid rgba(148,163,184,0.4);
+    }
+
+    body[data-theme="dark"] .memo-editor {
+      background: var(--memo-bg-dark);
+      color: var(--text-dark);
+    }
+
+    body[data-theme="light"] .memo-editor {
+      background: var(--memo-bg-light);
+      color: var(--text-light);
+    }
+
+    .memo-history {
       font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: #555;
+      border-radius: 6px;
+      border: 1px dashed rgba(148,163,184,0.5);
+      padding: 6px;
+      box-sizing: border-box;
+      overflow: auto;
+    }
+
+    .memo-history-item {
       margin-bottom: 4px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding-bottom: 4px;
+      border-bottom: 1px dashed rgba(148,163,184,0.25);
     }
 
-    .panel-header span.title-main {
-      font-weight: 700;
+    .memo-history-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
     }
 
-    /* Forms & fields */
-    .field-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 4px 6px;
-    }
-
-    .field {
-      display: flex;
-      flex-direction: column;
-      gap: 1px;
-    }
-
-    .field-half {
-      grid-column: span 2;
-    }
-
-    .field-full {
-      grid-column: 1 / -1;
-    }
-
-    .field label {
+    .memo-history-meta {
       font-size: 10px;
-      color: var(--label);
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      opacity: 0.7;
     }
 
-    input[type="text"],
-    input[type="number"],
-    input[type="date"],
-    select,
-    textarea {
-      border-radius: 2px;
-      border: 1px solid var(--input-border);
-      background: var(--input-bg);
-      padding: 3px 4px;
+    .memo-history-text {
+      margin-top: 2px;
+    }
+
+    .memo-toggle {
       font-size: 11px;
-      font-family: inherit;
-    }
-
-    select {
-      padding-right: 18px;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 52px;
-    }
-
-    .field-inline {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-size: 11px;
+      cursor: pointer;
     }
-    .field-inline label {
+
+    .memo-toggle input {
       margin: 0;
-      text-transform: none;
-      letter-spacing: normal;
+    }
+
+    /* Debug console */
+    .debug {
       font-size: 11px;
+      padding: 3px 8px;
+      border-top: 1px solid rgba(148,163,184,0.3);
+      max-height: 80px;
+      overflow: auto;
     }
 
-    .field-inline input[type="checkbox"] {
-      margin: 0;
-      width: 13px;
-      height: 13px;
+    body[data-theme="dark"] .debug {
+      background: #020617;
+      color: var(--muted-dark);
     }
 
-    .tag {
+    body[data-theme="light"] .debug {
+      background: #f9fafb;
+      color: var(--muted-light);
+    }
+
+    .debug-entry {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+
+    .nav-arrows {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      margin-left: 6px;
+    }
+
+    .nav-arrows .btn {
+      width: 26px;
+      justify-content: center;
+      padding: 4px 0;
+    }
+
+    .divider {
+      width: 1px;
+      height: 22px;
+      background: rgba(148,163,184,0.4);
+      margin: 0 4px;
+    }
+
+    input[type="file"] {
       font-size: 10px;
-      padding: 2px 6px;
-      border-radius: 999px;
-      background: var(--accent-soft);
-      color: #12355b;
-      border: 1px solid rgba(23,105,170,0.4);
     }
 
-    .tag.warn {
-      background: #fef3c7;
-      border-color: #fbbf24;
-      color: #92400e;
-    }
-
-    .tag.danger {
-      background: #fee2e2;
-      border-color: #dc2626;
-      color: #991b1b;
-    }
-
-    /* Memos panel */
-    .memos-panel {
-      grid-column: 1 / -1;
-      background: var(--memo-bg);
-    }
-
-    .memo-grid {
-      display: grid;
-      grid-template-columns: 1.4fr 1.1fr;
-      gap: 8px;
-    }
-
-    .memo-group-title {
-      font-size: 11px;
-      font-weight: 600;
-      margin-bottom: 3px;
-    }
-
-    .memo-field label {
-      font-size: 10px;
-      color: var(--label);
-    }
-
-    .memo-field textarea {
-      width: 100%;
-    }
-
-    /* Status bar (bottom) */
-    .status-bar {
-      margin-top: 6px;
-      font-size: 11px;
-      display: flex;
-      justify-content: space-between;
-      color: #444;
-    }
-
-    .status-bar span {
-      padding: 2px 4px;
-    }
-
-    @media (max-width: 1024px) {
-      form.db-form {
-        grid-template-columns: 1fr;
-      }
-      .memo-grid {
-        grid-template-columns: 1fr;
-      }
+    .hidden {
+      display: none !important;
     }
   </style>
 </head>
 <body>
-<div class="lotus-window">
-  <div class="lotus-titlebar">
-    <div class="lotus-buttons">
-      <div class="lotus-dot red"></div>
-      <div class="lotus-dot yellow"></div>
-      <div class="lotus-dot green"></div>
-    </div>
-    <span>AVD Venue / Job Database – Demo Layout</span>
-    <span style="width:40px;"></span>
+  <div class="app-shell">
+    <header class="toolbar">
+      <div class="toolbar-left">
+        <div class="app-title">AVD – Venue Database</div>
+        <button class="btn btn-primary" type="button" onclick="logDebug('Browse clicked (stub)')">Browse</button>
+        <button class="btn" type="button" onclick="logDebug('New Record clicked (stub)')">New</button>
+        <button class="btn" type="button" onclick="logDebug('Find clicked (stub)')">Find</button>
+        <button class="btn" type="button" onclick="logDebug('All Records filter clicked (stub)')">
+          All Records ▾
+        </button>
+      </div>
+
+      <div class="toolbar-center">
+        <span style="font-size:11px;opacity:0.8;">Record</span>
+        <div class="nav-arrows">
+          <button class="btn btn-icon" type="button" onclick="logDebug('First record (stub)')">⏮</button>
+          <button class="btn btn-icon" type="button" onclick="logDebug('Previous record (stub)')">◀</button>
+          <button class="btn btn-icon" type="button" onclick="logDebug('Next record (stub)')">▶</button>
+          <button class="btn btn-icon" type="button" onclick="logDebug('Last record (stub)')">⏭</button>
+        </div>
+      </div>
+
+      <div class="toolbar-right">
+        <button class="btn pill-theme-toggle" type="button" onclick="toggleTheme()">
+          <span id="theme-emoji">🌙</span>
+        </button>
+        <div class="pill">
+          <span class="pill-dot"></span>
+          <span>v0.2 – AVD DB</span>
+        </div>
+        <div class="pill pill-clickable" onclick="goToAvdTools()">
+          <span>AVD Tools</span>
+          <span>↗</span>
+        </div>
+      </div>
+    </header>
+
+    <main class="main">
+      <!-- View tabs -->
+      <div class="view-tabs">
+        <button id="tab-form" class="view-tab active" type="button" onclick="switchView('form')">
+          Form View
+        </button>
+        <button id="tab-designer" class="view-tab" type="button" onclick="switchView('designer')">
+          Designer View
+        </button>
+      </div>
+
+      <section class="workspace">
+        <!-- Top: canvas + designer side panel -->
+        <div class="canvas-and-designer">
+          <div class="canvas-wrapper">
+            <div class="canvas-toolbar">
+              <button class="btn btn-icon" type="button" onclick="toggleDesignMode()" title="Toggle design mode">
+                ✏️
+              </button>
+              <span id="design-indicator" class="design-mode-indicator">Design Mode: Off</span>
+              <div class="divider"></div>
+              <button class="btn" type="button" onclick="downloadLayout()">Save Layout</button>
+              <label class="btn" style="cursor:pointer;">
+                Load Layout
+                <input id="layoutFile" type="file" accept=".json" class="hidden" onchange="loadLayoutFromFile(event)" />
+              </label>
+            </div>
+            <div id="canvas" class="canvas"></div>
+          </div>
+
+          <!-- Designer side panel -->
+          <aside id="designerPanel">
+            <div id="designerPanelHeader">
+              <span>Sections / Blocks</span>
+              <span style="font-size:10px;opacity:0.8;">Show / hide + jump</span>
+            </div>
+            <div id="designerPanelList"></div>
+          </aside>
+        </div>
+
+        <!-- Bottom: memo / notes panel -->
+        <div class="memo-wrapper">
+          <div class="memo-toolbar">
+            <div class="memo-controls">
+              <span style="font-weight:600;font-size:11px;">Notes &amp; History</span>
+              <select id="memoFieldSelector" class="memo-select">
+                <option value="notes_main">Notes – General (notes_main)</option>
+                <option value="service_is">Service Notes (service_is)</option>
+                <option value="job_costs">Job Costs (job_costs)</option>
+                <option value="recce_feed">Recce Feedback (recce_feed)</option>
+                <option value="history_log" selected>History Log (history_log)</option>
+              </select>
+            </div>
+            <label class="memo-toggle">
+              <input id="logChangesToggle" type="checkbox" checked />
+              <span>Log field changes into history_log</span>
+            </label>
+          </div>
+          <div class="memo-body">
+            <textarea id="memoEditor" class="memo-editor"
+              placeholder="Type notes for the selected memo field here..."></textarea>
+            <div id="memoHistory" class="memo-history"></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="debug" class="debug"></section>
+    </main>
   </div>
 
-  <div class="lotus-toolbar">
-    <button type="button" class="toolbar-button primary">Save</button>
-    <button type="button" class="toolbar-button">New</button>
-    <button type="button" class="toolbar-button">Find</button>
-    <button type="button" class="toolbar-button">List</button>
-    <button type="button" class="toolbar-button">Delete</button>
-    <button type="button" class="toolbar-button">Print</button>
-    <button type="button" class="toolbar-button">Debug</button>
-  </div>
+  <script>
+    // ---------- Theme ----------
+    function applyStoredTheme() {
+      const stored = localStorage.getItem('avd-db-theme');
+      if (stored === 'light' || stored === 'dark') {
+        document.body.setAttribute('data-theme', stored);
+      }
+      const isDark = document.body.getAttribute('data-theme') === 'dark';
+      document.getElementById('theme-emoji').textContent = isDark ? '🌙' : '☀️';
+    }
 
-  <form class="db-form">
-    <!-- LEFT TOP: VENUE / VENUE DETAILS -->
-    <section class="panel">
-      <div class="panel-header">
-        <span class="title-main">Venue Details</span>
-        <span class="tag">Main</span>
-      </div>
-      <div class="field-grid">
-        <div class="field field-full">
-          <label for="company">Venue / Organisation</label>
-          <input type="text" id="company" name="company" />
-        </div>
+    function toggleTheme() {
+      const current = document.body.getAttribute('data-theme') || 'dark';
+      const next = current === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', next);
+      localStorage.setItem('avd-db-theme', next);
+      document.getElementById('theme-emoji').textContent = next === 'dark' ? '🌙' : '☀️';
+      logDebug('Theme switched to ' + next);
+    }
 
-        <div class="field field-full">
-          <label for="address">Address Line 1</label>
-          <input type="text" id="address" name="address" />
-        </div>
+    applyStoredTheme();
 
-        <div class="field field-full">
-          <label for="address1">Address Line 2</label>
-          <input type="text" id="address1" name="address1" />
-        </div>
+    function goToAvdTools() {
+      logDebug('AVD Tools pill clicked – set correct URL in goToAvdTools()');
+      // window.location.href = 'https://your-avd-tools-url-here';
+    }
 
-        <div class="field field-full">
-          <label for="address2">Address Line 3</label>
-          <input type="text" id="address2" name="address2" />
-        </div>
+    // ---------- View switching (Form vs Designer) ----------
+    let currentView = document.body.getAttribute('data-view') || 'form';
 
-        <div class="field field-half">
-          <label for="area">Area</label>
-          <!-- in real app, this becomes a huge dropdown / autocomplete -->
-          <input type="text" id="area" name="area" />
-        </div>
+    function switchView(view) {
+      currentView = view;
+      document.body.setAttribute('data-view', view);
 
-        <div class="field field-half">
-          <label for="town">Town / City</label>
-          <!-- real app: dropdown / autocomplete from enums -->
-          <input type="text" id="town" name="town" />
-        </div>
+      document.getElementById('tab-form').classList.toggle('active', view === 'form');
+      document.getElementById('tab-designer').classList.toggle('active', view === 'designer');
 
-        <div class="field">
-          <label for="county">County</label>
-          <!-- small enough to be a dropdown in final version -->
-          <input type="text" id="county" name="county" />
-        </div>
+      updateFieldVisibilityForView();
+      logDebug('Switched to ' + view + ' view');
+    }
 
-        <div class="field">
-          <label for="country">Country</label>
-          <select id="country" name="country">
-            <option value="">(Select)</option>
-            <!-- values drawn from enum_output_enhanced.json / country -->
-            <option value="England">England</option>
-            <option value="Wales">Wales</option>
-            <option value="Scotland">Scotland</option>
-            <option value="Ireland">Ireland</option>
-            <option value="Channel Islands">Channel Islands</option>
-            <option value="Belgium">Belgium</option>
-            <option value="France">France</option>
-            <option value="Germany">Germany</option>
-            <option value="Spain">Spain</option>
-          </select>
-        </div>
+    // ---------- Layout / fields ----------
+    const GRID_SIZE = 12;
+    let designMode = false;
+    let currentDrag = null;
+    let currentResize = null;
 
-        <div class="field">
-          <label for="postcode">Postcode</label>
-          <input type="text" id="postcode" name="postcode" />
-        </div>
+    const FIELD_DEFS = [
+      {
+        id: 'venueMain',
+        label: 'Venue Details',
+        category: 'venue',
+        default: { left: 16, top: 16, width: 480, height: 120, hidden: false },
+        render: function() {
+          return `
+            <div class="field-row">
+              <div class="field-label">Venue / Company</div>
+              <input class="field-input" data-field="company" placeholder="Company / Venue name" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Address</div>
+              <input class="field-input" data-field="address" placeholder="Address line 1" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Address 2</div>
+              <input class="field-input" data-field="address2" placeholder="Address line 2" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Area / Town</div>
+              <input class="field-input" data-field="area" placeholder="Area" style="max-width: 120px;" />
+              <input class="field-input" data-field="town" placeholder="Town" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">County</div>
+              <input class="field-input" data-field="county" placeholder="County" style="max-width: 160px;" />
+              <div class="field-label">Postcode</div>
+              <input class="field-input" data-field="postcode" placeholder="Postcode" style="max-width: 120px;" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Country</div>
+              <select class="field-select" data-field="country">
+                <option value="">(Select)</option>
+                <option value="England">England</option>
+                <option value="Wales">Wales</option>
+              </select>
+            </div>
+          `;
+        }
+      },
+      {
+        id: 'primaryContact',
+        label: 'Primary Contact',
+        category: 'contacts',
+        default: { left: 520, top: 16, width: 360, height: 120, hidden: false },
+        render: function() {
+          return `
+            <div class="field-row">
+              <div class="field-label">Prefix</div>
+              <select class="field-select" data-field="pre_1">
+                <option value="">(Title)</option>
+                <option>Mr</option>
+                <option>Mrs</option>
+                <option>Miss</option>
+                <option>Ms</option>
+                <option>Rev</option>
+                <option>Canon</option>
+                <option>Dr</option>
+              </select>
+              <div class="field-label">WSM Mem?</div>
+              <span class="field-checkbox">
+                <input id="wsm_member" type="checkbox" data-field="wsm_member" />
+                <label for="wsm_member">Yes</label>
+              </span>
+            </div>
+            <div class="field-row">
+              <div class="field-label">First</div>
+              <input class="field-input" data-field="first_name" placeholder="First name" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Last</div>
+              <input class="field-input" data-field="last_name" placeholder="Last name" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Job Title</div>
+              <input class="field-input" data-field="job_title" placeholder="Job title" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Mobile</div>
+              <input class="field-input" data-field="mobile_1" placeholder="Mobile 1" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Email</div>
+              <input class="field-input" data-field="email" placeholder="Email 1" />
+            </div>
+          `;
+        }
+      },
+      {
+        id: 'classificationSales',
+        label: 'Classification & Sales',
+        category: 'sales',
+        default: { left: 16, top: 152, width: 420, height: 120, hidden: false },
+        render: function() {
+          return `
+            <div class="field-row">
+              <div class="field-label">Classification</div>
+              <select class="field-select" data-field="classifica">
+                <option value="">(Select)</option>
+                <option>Prospect</option>
+                <option>Customer</option>
+                <option>Dormant</option>
+                <option>Lost</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <div class="field-label">Status of Job</div>
+              <select class="field-select" data-field="status_of_">
+                <option value="">(Select)</option>
+                <option>Enquiry</option>
+                <option>Quoted</option>
+                <option>Won</option>
+                <option>Lost</option>
+                <option>On Hold</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <div class="field-label">Market</div>
+              <select class="field-select" data-field="market">
+                <option value="">(Select)</option>
+                <option>Church</option>
+                <option>School</option>
+                <option>Hall</option>
+                <option>Corporate</option>
+                <option>Hospitality</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <div class="field-label">Denomination</div>
+              <select class="field-select" data-field="denominati">
+                <option value="">(Select)</option>
+                <option>Church of England</option>
+                <option>Roman Catholic</option>
+                <option>Baptist</option>
+                <option>Methodist</option>
+                <option>URC</option>
+                <option>Other</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <div class="field-label">GP %</div>
+              <input class="field-input" data-field="gp__" placeholder="e.g. 45" />
+              <div class="field-label">GP £</div>
+              <input class="field-input" data-field="gp___act" placeholder="e.g. 3500" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Revenue £</div>
+              <input class="field-input" data-field="revenue" placeholder="e.g. 7800" />
+            </div>
+          `;
+        }
+      },
+      {
+        id: 'consultantFlags',
+        label: 'Consultant & Flags',
+        category: 'flags',
+        default: { left: 448, top: 152, width: 432, height: 120, hidden: false },
+        render: function() {
+          return `
+            <div class="field-row">
+              <div class="field-label">Consultant</div>
+              <select class="field-select" data-field="consultant">
+                <option value="">(Select)</option>
+                <option>Mark</option>
+                <option>Neil</option>
+                <option>Josh</option>
+                <option>Sharon</option>
+                <option>Frazer</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <div class="field-label">Lead From</div>
+              <select class="field-select" data-field="lead_from">
+                <option value="">(Select)</option>
+                <option>Website</option>
+                <option>Referral</option>
+                <option>WSM Chamber</option>
+                <option>Existing Customer</option>
+                <option>Inbound Call</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <div class="field-label">Flag – David</div>
+              <select class="field-select" data-field="flag">
+                <option value="">(None)</option>
+                <option>Watch</option>
+                <option>Key Account</option>
+                <option>Price Sensitive</option>
+              </select>
+            </div>
+            <div class="field-row">
+              <span class="field-checkbox">
+                <input id="negotiable" type="checkbox" data-field="negotiatin" />
+                <label for="negotiable">Negotiable?</label>
+              </span>
+              <span class="field-checkbox">
+                <input id="bad_email" type="checkbox" data-field="bad_email" />
+                <label for="bad_email">Bad Email?</label>
+              </span>
+              <span class="field-checkbox">
+                <input id="exclude_chase" type="checkbox" data-field="exc_chase" />
+                <label for="exclude_chase">Exclude From Chase</label>
+              </span>
+            </div>
+            <div class="field-row">
+              <span class="field-checkbox">
+                <input id="within10" type="checkbox" data-field="area___10m" />
+                <label for="within10">&lt;=10 miles</label>
+              </span>
+              <span class="field-checkbox">
+                <input id="within25" type="checkbox" data-field="area___25m" />
+                <label for="within25">&lt;=25 miles</label>
+              </span>
+              <span class="field-checkbox">
+                <input id="within50" type="checkbox" data-field="area___50m" />
+                <label for="within50">&lt;=50 miles</label>
+              </span>
+            </div>
+          `;
+        }
+      },
+      {
+        id: 'serviceDates',
+        label: 'Service / Key Dates',
+        category: 'service',
+        default: { left: 16, top: 288, width: 420, height: 120, hidden: false },
+        render: function() {
+          return `
+            <div class="field-row">
+              <div class="field-label">Recce Date</div>
+              <input class="field-input" type="date" data-field="recce_date" />
+              <div class="field-label">Report</div>
+              <input class="field-input" type="date" data-field="report" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Quote Sent</div>
+              <input class="field-input" type="date" data-field="quote_sent" />
+              <div class="field-label">Quote Recvd</div>
+              <input class="field-input" type="date" data-field="quote_rcvd" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Date Sold</div>
+              <input class="field-input" type="date" data-field="date_sold" />
+              <div class="field-label">Job Completed</div>
+              <input class="field-input" type="date" data-field="job_comple" />
+            </div>
+            <div class="field-row">
+              <div class="field-label">Service Open</div>
+              <input class="field-input" type="date" data-field="service_op" />
+              <div class="field-label">Service Close</div>
+              <input class="field-input" type="date" data-field="service_cl" />
+            </div>
+          `;
+        }
+      }
+    ];
 
-        <div class="field">
-          <label for="classifica">Classification</label>
-          <!-- real app: dropdown from classifica enums -->
-          <input type="text" id="classifica" name="classifica" />
-        </div>
+    function snap(value) {
+      return Math.round(value / GRID_SIZE) * GRID_SIZE;
+    }
 
-        <div class="field">
-          <label for="identifica">Identification</label>
-          <!-- real app: dropdown from identifica enums -->
-          <input type="text" id="identifica" name="identifica" />
-        </div>
+    function initCanvas() {
+      const canvas = document.getElementById('canvas');
+      canvas.innerHTML = '';
 
-        <div class="field">
-          <label for="market">Market</label>
-          <select id="market" name="market">
-            <option value="">(Select)</option>
-            <!-- examples from enum_output_enhanced.json / market -->
-            <option value="Chur/Hall">Church / Hall</option>
-            <option value="Charity">Charity</option>
-            <option value="Education">Education</option>
-            <option value="Healthcare">Healthcare</option>
-            <option value="Leisure">Leisure</option>
-            <option value="Business">Business</option>
-            <option value="Government">Government</option>
-            <option value="Contractor">Contractor</option>
-          </select>
-        </div>
+      FIELD_DEFS.forEach(def => {
+        const box = document.createElement('div');
+        box.className = 'field-box';
+        box.dataset.id = def.id;
+        box.dataset.category = def.category;
+        box.dataset.hidden = def.default.hidden ? 'true' : 'false';
 
-        <div class="field">
-          <label for="denominati">Denomination</label>
-          <!-- real app: dropdown from denominati enums -->
-          <input type="text" id="denominati" name="denominati" />
-        </div>
+        const d = def.default;
+        box.style.left = d.left + 'px';
+        box.style.top = d.top + 'px';
+        box.style.width = d.width + 'px';
+        box.style.height = d.height + 'px';
 
-      </div>
-    </section>
-
-    <!-- RIGHT TOP: CONTACTS -->
-    <section class="panel">
-      <div class="panel-header">
-        <span class="title-main">Contacts & Communication</span>
-        <span class="tag">People</span>
-      </div>
-
-      <div class="field-grid">
-        <!-- 1st Contact -->
-        <div class="field field-full">
-          <label>1st Contact</label>
-        </div>
-
-        <div class="field">
-          <label for="prefix_1">Prefix</label>
-          <input type="text" id="prefix_1" name="prefix_1" />
-        </div>
-        <div class="field">
-          <label for="first_name">First Name</label>
-          <input type="text" id="first_name" name="first_name" />
-        </div>
-        <div class="field">
-          <label for="last_name">Last Name</label>
-          <input type="text" id="last_name" name="last_name" />
-        </div>
-        <div class="field">
-          <label for="job_title">Job Title</label>
-          <input type="text" id="job_title" name="job_title" />
-        </div>
-
-        <div class="field">
-          <label for="mobile_1">Mobile</label>
-          <input type="text" id="mobile_1" name="mobile_1" />
-        </div>
-        <div class="field field-half">
-          <label for="email">Email</label>
-          <input type="text" id="email" name="email" />
-        </div>
-        <div class="field">
-          <label for="phone_1">Phone</label>
-          <input type="text" id="phone_1" name="phone_1" />
-        </div>
-
-        <!-- 2nd Contact -->
-        <div class="field field-full" style="margin-top:4px;">
-          <label>2nd Contact</label>
-        </div>
-
-        <div class="field">
-          <label for="prefix_2">Prefix</label>
-          <input type="text" id="prefix_2" name="prefix_2" />
-        </div>
-        <div class="field">
-          <label for="first_nam2">First Name</label>
-          <input type="text" id="first_nam2" name="first_nam2" />
-        </div>
-        <div class="field">
-          <label for="last_name_">Last Name</label>
-          <input type="text" id="last_name_" name="last_name_" />
-        </div>
-        <div class="field">
-          <label for="job_title_2">Job Title 2 (free)</label>
-          <input type="text" id="job_title_2" name="job_title_2" />
-        </div>
-
-        <div class="field">
-          <label for="phone_2">Phone</label>
-          <input type="text" id="phone_2" name="phone_2" />
-        </div>
-        <div class="field field-half">
-          <label for="email_2">Email</label>
-          <input type="text" id="email_2" name="email_2" />
-        </div>
-
-        <!-- 3rd Contact -->
-        <div class="field field-full" style="margin-top:4px;">
-          <label>3rd Contact</label>
-        </div>
-
-        <div class="field field-half">
-          <label for="contact_3">Name</label>
-          <input type="text" id="contact_3" name="contact_3" />
-        </div>
-        <div class="field">
-          <label for="phone_3">Phone</label>
-          <input type="text" id="phone_3" name="phone_3" />
-        </div>
-        <div class="field">
-          <label for="email_3">Email</label>
-          <input type="text" id="email_3" name="email_3" />
-        </div>
-
-        <!-- 4th Contact / Minister -->
-        <div class="field field-full" style="margin-top:4px;">
-          <label>4th Contact / Minister</label>
-        </div>
-
-        <div class="field field-half">
-          <label for="contact_4">Name</label>
-          <input type="text" id="contact_4" name="contact_4" />
-        </div>
-        <div class="field">
-          <label for="phone_4">Phone</label>
-          <input type="text" id="phone_4" name="phone_4" />
-        </div>
-        <div class="field">
-          <label for="email_4">Email</label>
-          <input type="text" id="email_4" name="email_4" />
-        </div>
-
-        <!-- Accounts -->
-        <div class="field field-full" style="margin-top:4px;">
-          <label>Accounts Contact</label>
-        </div>
-
-        <div class="field field-half">
-          <label for="accounts_contact">Accounts Contact (Name)</label>
-          <!-- mapped onto existing contact_4 or free field later -->
-          <input type="text" id="accounts_contact" name="accounts_contact" />
-        </div>
-        <div class="field field-half">
-          <label for="email_acco">Accounts Email</label>
-          <input type="text" id="email_acco" name="email_acco" />
-        </div>
-      </div>
-    </section>
-
-    <!-- LEFT MID: SALES / GP -->
-    <section class="panel">
-      <div class="panel-header">
-        <span class="title-main">Sales & GP</span>
-        <span class="tag warn">Commercial</span>
-      </div>
-
-      <div class="field-grid">
-        <div class="field field-half">
-          <label for="status_of_">Status of Job</label>
-          <!-- maps to status_of_ -->
-          <input type="text" id="status_of_" name="status_of_" />
-        </div>
-
-        <div class="field">
-          <label for="made_by">Made By</label>
-          <select id="made_by" name="made_by">
-            <option value="">(Select)</option>
-            <option value="Adam">Adam</option>
-            <option value="Dave">Dave</option>
-            <option value="David">David</option>
-            <option value="Helen">Helen</option>
-            <option value="Joe">Joe</option>
-            <option value="Josh">Josh</option>
-            <option value="Mark">Mark</option>
-            <option value="Neil">Neil</option>
-            <option value="Steven">Steven</option>
-          </select>
-        </div>
-
-        <div class="field">
-          <label for="consultant">Consultant</label>
-          <input type="text" id="consultant" name="consultant" />
-          <!-- real app: dropdown from consultant enums -->
-        </div>
-
-        <div class="field">
-          <label for="date_made">Date Made</label>
-          <input type="date" id="date_made" name="date_made" />
-        </div>
-
-        <div class="field">
-          <label for="date_expec">Expected Month</label>
-          <input type="text" id="month_expe" name="month_expe" />
-        </div>
-
-        <div class="field">
-          <label for="date_sold">Date Sold</label>
-          <input type="date" id="date_sold" name="date_sold" />
-        </div>
-
-        <div class="field">
-          <label for="job___days">Job Days</label>
-          <input type="number" step="0.01" id="job___days" name="job___days" />
-        </div>
-
-        <div class="field">
-          <label for="job___man_">Man Days</label>
-          <input type="number" step="0.01" id="job___man_" name="job___man_" />
-        </div>
-
-        <div class="field">
-          <label for="job___mile">Miles</label>
-          <input type="number" step="0.01" id="job___mile" name="job___mile" />
-        </div>
-
-        <div class="field">
-          <label for="revenue">Revenue £</label>
-          <input type="number" step="0.01" id="revenue" name="revenue" />
-        </div>
-
-        <div class="field">
-          <label for="gp___est">GP Est £</label>
-          <input type="number" step="0.01" id="gp___est" name="gp___est" />
-        </div>
-
-        <div class="field">
-          <label for="gp__">GP %</label>
-          <input type="number" step="0.01" id="gp__" name="gp__" />
-        </div>
-
-        <div class="field">
-          <label for="gp_dif____">GP Diff £</label>
-          <input type="number" step="0.01" id="gp_dif____" name="gp_dif____" />
-        </div>
-
-        <div class="field">
-          <label for="gp___act">GP Actual £</label>
-          <input type="number" step="0.01" id="gp___act" name="gp___act" />
-        </div>
-
-        <div class="field">
-          <label for="invoice_am">Invoice Amount £</label>
-          <input type="number" step="0.01" id="invoice_am" name="invoice_am" />
-        </div>
-
-        <div class="field">
-          <label for="invoice_ba">Invoice Balance £</label>
-          <input type="number" step="0.01" id="invoice_ba" name="invoice_ba" />
-        </div>
-
-        <div class="field">
-          <label for="paid_1__">Paid 1 £</label>
-          <input type="number" step="0.01" id="paid_1__" name="paid_1__" />
-        </div>
-
-        <div class="field">
-          <label for="paid_2__">Paid 2 £</label>
-          <input type="number" step="0.01" id="paid_2__" name="paid_2__" />
-        </div>
-
-        <div class="field">
-          <label for="paid_1">Paid 1 Date</label>
-          <input type="date" id="paid_1" name="paid_1" />
-        </div>
-
-        <div class="field">
-          <label for="paid_2">Paid 2 Date</label>
-          <input type="date" id="paid_2" name="paid_2" />
-        </div>
-
-        <div class="field">
-          <label for="date_bal_s">Balance Sent</label>
-          <input type="date" id="date_bal_s" name="date_bal_s" />
-        </div>
-      </div>
-    </section>
-
-    <!-- RIGHT MID: SERVICE / INSTALL / FLAGS -->
-    <section class="panel">
-      <div class="panel-header">
-        <span class="title-main">Service, Install & Flags</span>
-        <span class="tag danger">Ops</span>
-      </div>
-
-      <div class="field-grid">
-        <div class="field">
-          <label for="audio">Audio Installed</label>
-          <input type="date" id="audio" name="audio" />
-        </div>
-        <div class="field">
-          <label for="visual">Visual Installed</label>
-          <input type="date" id="visual" name="visual" />
-        </div>
-        <div class="field">
-          <label for="loop">Loop Installed</label>
-          <input type="date" id="loop" name="loop" />
-        </div>
-        <div class="field">
-          <label for="stream">Streaming Live</label>
-          <input type="date" id="stream" name="stream" />
-        </div>
-
-        <div class="field">
-          <label for="job_instal">Date Installed</label>
-          <input type="date" id="job_instal" name="job_instal" />
-        </div>
-        <div class="field">
-          <label for="job_comple">Date Completed</label>
-          <input type="date" id="job_comple" name="job_comple" />
-        </div>
-        <div class="field">
-          <label for="service_op">Service Open</label>
-          <input type="date" id="service_op" name="service_op" />
-        </div>
-        <div class="field">
-          <label for="service_cl">Service Closed</label>
-          <input type="date" id="service_cl" name="service_cl" />
-        </div>
-
-        <div class="field">
-          <label for="service_bo">Service Booked</label>
-          <input type="date" id="service_bo" name="service_bo" />
-        </div>
-        <div class="field">
-          <label for="confirmed">Confirmed</label>
-          <input type="date" id="confirmed" name="confirmed" />
-        </div>
-        <div class="field">
-          <label for="recce_type">Recce Type</label>
-          <input type="text" id="recce_type" name="recce_type" />
-        </div>
-        <div class="field">
-          <label for="recce_date">Recce Date</label>
-          <input type="date" id="recce_date" name="recce_date" />
-        </div>
-
-        <!-- Tick boxes -->
-        <div class="field-inline field-half" style="margin-top:4px;">
-          <input type="checkbox" id="area___10m" name="area___10m" />
-          <label for="area___10m">Within 10 miles</label>
-        </div>
-        <div class="field-inline field-half" style="margin-top:4px;">
-          <input type="checkbox" id="area___25m" name="area___25m" />
-          <label for="area___25m">Within 25 miles</label>
-        </div>
-        <div class="field-inline field-half">
-          <input type="checkbox" id="area___50m" name="area___50m" />
-          <label for="area___50m">Within 50 miles</label>
-        </div>
-        <div class="field-inline field-half">
-          <input type="checkbox" id="avw" name="avw" />
-          <label for="avw">AVW</label>
-        </div>
-
-        <div class="field-inline field-half">
-          <input type="checkbox" id="bad_email" name="bad_email" />
-          <label for="bad_email">Bad Email</label>
-        </div>
-        <div class="field-inline field-half">
-          <input type="checkbox" id="exc_chase" name="exc_chase" />
-          <label for="exc_chase">Exclude from Chasing</label>
-        </div>
-        <div class="field-inline field-half">
-          <input type="checkbox" id="negotiatin" name="negotiatin" />
-          <label for="negotiatin">Negotiable</label>
-        </div>
-        <div class="field-inline field-half">
-          <input type="checkbox" id="wsm_member" name="wsm_member" />
-          <label for="wsm_member">WSM Member</label>
-        </div>
-
-        <div class="field field-full">
-          <label for="territory">Territory</label>
-          <input type="text" id="territory" name="territory" />
-        </div>
-
-        <div class="field field-full">
-          <label for="service_ty">Service Type</label>
-          <input type="text" id="service_ty" name="service_ty" />
-        </div>
-
-      </div>
-    </section>
-
-    <!-- BOTTOM: MEMOS -->
-    <section class="panel memos-panel">
-      <div class="panel-header">
-        <span class="title-main">Notes, Requirements & Technical Memos</span>
-        <span class="tag">Memos</span>
-      </div>
-
-      <div class="memo-grid">
-        <div>
-          <div class="memo-group-title">Job & Venue</div>
-
-          <div class="memo-field">
-            <label for="job_requir">Job Requirements (job_requir)</label>
-            <textarea id="job_requir" name="job_requir"></textarea>
+        box.innerHTML = `
+          <div class="field-header">
+            <span>${def.label}</span>
+            <span class="field-header-badge">${def.category}</span>
           </div>
-
-          <div class="memo-field">
-            <label for="notes_main">Main Notes (notes_main)</label>
-            <textarea id="notes_main" name="notes_main"></textarea>
+          <div class="field-body">
+            ${def.render()}
           </div>
+          <div class="resize-handle"></div>
+        `;
 
-          <div class="memo-field">
-            <label for="local_inst">Local Install Notes (local_inst)</label>
-            <textarea id="local_inst" name="local_inst"></textarea>
-          </div>
+        const header = box.querySelector('.field-header');
+        const resizeHandle = box.querySelector('.resize-handle');
 
-          <div class="memo-field">
-            <label for="job_costs">Job Costs / Breakdown (job_costs)</label>
-            <textarea id="job_costs" name="job_costs"></textarea>
-          </div>
-        </div>
+        header.addEventListener('mousedown', onDragStart);
+        resizeHandle.addEventListener('mousedown', onResizeStart);
 
-        <div>
-          <div class="memo-group-title">Technical / Recce / Feedback</div>
+        box.querySelectorAll('input, select, textarea').forEach(el => {
+          el.addEventListener('change', onFieldChanged);
+        });
 
-          <div class="memo-field">
-            <label for="recce_feed">Recce Notes (recce_feed)</label>
-            <textarea id="recce_feed" name="recce_feed"></textarea>
-          </div>
+        canvas.appendChild(box);
+      });
 
-          <div class="memo-field">
-            <label for="service_is">Service Issues / Conclusion (service_is)</label>
-            <textarea id="service_is" name="service_is"></textarea>
-          </div>
+      updateFieldVisibilityForView();
+    }
 
-          <div class="memo-field">
-            <label for="equipment_">Equipment List (equipment_)</label>
-            <textarea id="equipment_" name="equipment_"></textarea>
-          </div>
+    function onDragStart(e) {
+      if (!designMode) return;
+      const box = e.currentTarget.parentElement;
+      const rect = box.getBoundingClientRect();
+      const canvasRect = document.getElementById('canvas').getBoundingClientRect();
 
-          <div class="memo-field">
-            <label for="cabling___">Cabling Notes (cabling___)</label>
-            <textarea id="cabling___" name="cabling___"></textarea>
-          </div>
+      currentDrag = {
+        id: box.dataset.id,
+        offsetX: e.clientX - rect.left,
+        offsetY: e.clientY - rect.top,
+        canvasLeft: canvasRect.left,
+        canvasTop: canvasRect.top
+      };
 
-          <div class="memo-field">
-            <label for="feedback__">Feedback 1 (feedback__)</label>
-            <textarea id="feedback__" name="feedback__"></textarea>
-          </div>
+      document.addEventListener('mousemove', onDragging);
+      document.addEventListener('mouseup', onDragEnd);
+      e.preventDefault();
+    }
 
-          <div class="memo-field">
-            <label for="feedback_2">Feedback 2 (feedback_2)</label>
-            <textarea id="feedback_2" name="feedback_2"></textarea>
-          </div>
+    function onDragging(e) {
+      if (!currentDrag) return;
+      const box = document.querySelector(`.field-box[data-id="${currentDrag.id}"]`);
+      if (!box) return;
 
-          <div class="memo-field">
-            <label for="feedback_3">Feedback 3 (feedback_3)</label>
-            <textarea id="feedback_3" name="feedback_3"></textarea>
-          </div>
-        </div>
-      </div>
-    </section>
-  </form>
+      const rawLeft = e.clientX - currentDrag.canvasLeft - currentDrag.offsetX;
+      const rawTop = e.clientY - currentDrag.canvasTop - currentDrag.offsetY;
 
-  <div class="status-bar">
-    <span>Record: [   ] &nbsp; | &nbsp; Last Modified: [        ]</span>
-    <span>AVD – Demo Only (no backend wired)</span>
-  </div>
-</div>
+      box.style.left = snap(rawLeft) + 'px';
+      box.style.top = snap(rawTop) + 'px';
+    }
+
+    function onDragEnd() {
+      if (currentDrag) {
+        logDebug('Moved ' + currentDrag.id);
+      }
+      document.removeEventListener('mousemove', onDragging);
+      document.removeEventListener('mouseup', onDragEnd);
+      currentDrag = null;
+    }
+
+    function onResizeStart(e) {
+      if (!designMode) return;
+      const box = e.currentTarget.parentElement;
+      const rect = box.getBoundingClientClientRect ? box.getBoundingClientRect() : box.getBoundingClientRect();
+      currentResize = {
+        id: box.dataset.id,
+        startX: e.clientX,
+        startY: e.clientY,
+        startWidth: rect.width,
+        startHeight: rect.height
+      };
+      document.addEventListener('mousemove', onResizing);
+      document.addEventListener('mouseup', onResizeEnd);
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    function onResizing(e) {
+      if (!currentResize) return;
+      const box = document.querySelector(`.field-box[data-id="${currentResize.id}"]`);
+      if (!box) return;
+      const deltaX = e.clientX - currentResize.startX;
+      const deltaY = e.clientY - currentResize.startY;
+      const newW = snap(Math.max(120, currentResize.startWidth + deltaX));
+      const newH = snap(Math.max(48, currentResize.startHeight + deltaY));
+      box.style.width = newW + 'px';
+      box.style.height = newH + 'px';
+    }
+
+    function onResizeEnd() {
+      if (currentResize) {
+        logDebug('Resized ' + currentResize.id);
+      }
+      document.removeEventListener('mousemove', onResizing);
+      document.removeEventListener('mouseup', onResizeEnd);
+      currentResize = null;
+    }
+
+    function toggleDesignMode() {
+      designMode = !designMode;
+      const indicator = document.getElementById('design-indicator');
+      indicator.textContent = 'Design Mode: ' + (designMode ? 'On' : 'Off');
+      indicator.style.opacity = designMode ? '1' : '0.7';
+      logDebug('Design mode ' + (designMode ? 'enabled' : 'disabled'));
+    }
+
+    function collectLayout() {
+      const layout = {};
+      document.querySelectorAll('.field-box').forEach(box => {
+        const id = box.dataset.id;
+        layout[id] = {
+          left: parseInt(box.style.left, 10) || 0,
+          top: parseInt(box.style.top, 10) || 0,
+          width: parseInt(box.style.width, 10) || 200,
+          height: parseInt(box.style.height, 10) || 80,
+          hidden: box.dataset.hidden === 'true'
+        };
+      });
+      return layout;
+    }
+
+    function applyLayout(layout) {
+      Object.keys(layout).forEach(id => {
+        const box = document.querySelector(`.field-box[data-id="${id}"]`);
+        if (!box) return;
+        const l = layout[id];
+        box.style.left = (l.left || 0) + 'px';
+        box.style.top = (l.top || 0) + 'px';
+        box.style.width = (l.width || 200) + 'px';
+        box.style.height = (l.height || 80) + 'px';
+        box.dataset.hidden = l.hidden ? 'true' : 'false';
+      });
+      updateDesignerPanelCheckboxes();
+      updateFieldVisibilityForView();
+      logDebug('Layout applied from JSON');
+    }
+
+    function downloadLayout() {
+      const layout = collectLayout();
+      const blob = new Blob([JSON.stringify(layout, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'layout.json';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      logDebug('Layout downloaded as layout.json');
+    }
+
+    function loadLayoutFromFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const json = JSON.parse(e.target.result);
+          applyLayout(json);
+        } catch (err) {
+          logDebug('Error parsing layout JSON: ' + err.message);
+        }
+      };
+      reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function setFieldHidden(id, hidden) {
+      const box = document.querySelector(`.field-box[data-id="${id}"]`);
+      if (!box) return;
+      box.dataset.hidden = hidden ? 'true' : 'false';
+      updateFieldVisibilityForView();
+      logDebug((hidden ? 'Hid ' : 'Showed ') + id);
+    }
+
+    function updateFieldVisibilityForView() {
+      document.querySelectorAll('.field-box').forEach(box => {
+        const hidden = box.dataset.hidden === 'true';
+        if (currentView === 'form') {
+          box.style.display = hidden ? 'none' : 'flex';
+          box.style.opacity = '1';
+        } else {
+          box.style.display = 'flex';
+          box.style.opacity = hidden ? '0.25' : '1';
+        }
+      });
+    }
+
+    // ---------- Designer side panel ----------
+    function initDesignerPanel() {
+      const list = document.getElementById('designerPanelList');
+      list.innerHTML = '';
+
+      FIELD_DEFS.forEach(def => {
+        const row = document.createElement('div');
+        row.className = 'designer-row';
+        row.dataset.id = def.id;
+
+        const label = document.createElement('div');
+        label.className = 'designer-row-label';
+        label.textContent = def.label;
+
+        const cat = document.createElement('div');
+        cat.className = 'designer-row-cat';
+        cat.textContent = def.category;
+
+        const toggle = document.createElement('label');
+        toggle.className = 'designer-row-toggle';
+        const checkbox = document.createElement('input');
+        checkbox.type = 'checkbox';
+        checkbox.checked = !def.default.hidden;
+        checkbox.dataset.id = def.id;
+        const txt = document.createElement('span');
+        txt.textContent = 'Show';
+
+        toggle.appendChild(checkbox);
+        toggle.appendChild(txt);
+
+        row.appendChild(label);
+        row.appendChild(cat);
+        row.appendChild(toggle);
+
+        row.addEventListener('click', (e) => {
+          if (e.target.tagName.toLowerCase() === 'input') return;
+          const box = document.querySelector(`.field-box[data-id="${def.id}"]`);
+          if (!box) return;
+          box.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+        });
+
+        checkbox.addEventListener('change', e => {
+          const id = e.target.dataset.id;
+          setFieldHidden(id, !e.target.checked);
+        });
+
+        list.appendChild(row);
+      });
+
+      updateDesignerPanelCheckboxes();
+    }
+
+    function updateDesignerPanelCheckboxes() {
+      document.querySelectorAll('#designerPanelList input[type="checkbox"]').forEach(cb => {
+        const id = cb.dataset.id;
+        const box = document.querySelector(`.field-box[data-id="${id}"]`);
+        if (!box) return;
+        cb.checked = !(box.dataset.hidden === 'true');
+      });
+    }
+
+    // ---------- Memo / history ----------
+    const memoHistoryEl = document.getElementById('memoHistory');
+    const memoEditorEl = document.getElementById('memoEditor');
+    const logChangesToggleEl = document.getElementById('logChangesToggle');
+
+    function appendHistoryEntry(text) {
+      const item = document.createElement('div');
+      item.className = 'memo-history-item';
+      const meta = document.createElement('div');
+      meta.className = 'memo-history-meta';
+      const ts = new Date().toLocaleString();
+      meta.textContent = ts + ' – UI (prototype)';
+      const body = document.createElement('div');
+      body.className = 'memo-history-text';
+      body.textContent = text;
+      item.appendChild(meta);
+      item.appendChild(body);
+      memoHistoryEl.prepend(item);
+    }
+
+    function onFieldChanged(e) {
+      if (!logChangesToggleEl.checked) return;
+      const fieldName = e.target.dataset.field || '(unknown)';
+      let newValue = '';
+      if (e.target.type === 'checkbox') {
+        newValue = e.target.checked ? 'Yes' : 'No';
+      } else {
+        newValue = e.target.value;
+      }
+      const labelEl = e.target.closest('.field-row')?.querySelector('.field-label');
+      const prettyLabel = labelEl ? labelEl.textContent.trim() : fieldName;
+      appendHistoryEntry(prettyLabel + ' → ' + newValue);
+    }
+
+    // ---------- Debug ----------
+    const debugEl = document.getElementById('debug');
+    function logDebug(msg) {
+      const line = document.createElement('div');
+      const ts = new Date().toLocaleTimeString();
+      line.className = 'debug-entry';
+      line.textContent = '[' + ts + '] ' + msg;
+      debugEl.prepend(line);
+    }
+
+    // ---------- Init ----------
+    initCanvas();
+    initDesignerPanel();
+    logDebug('UI + Designer prototype initialised');
+  </script>
 </body>
 </html>
